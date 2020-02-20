@@ -12,6 +12,11 @@ Matchmaking system for multiple Spotify users to create a list which has songs b
 - [ ] **(bonus):** allow parameters for better recommendation (min. artist, min. numbers, ‘danceability (?)’, etc…) 
 - [ ] **(bonus):** Host service on website
 ### Front-end
+- [ ] Design individual pages (or just yolo it)
+- [ ] Pages
+- - [ ] Landing page
+- - [ ] Invite page
+- - [ ] Playlist page
 - [ ] Support data visualisation
 - [ ] Allow sharing of links to others so they can connect to the session (QR?)
 - [ ] **(bonus):** show users the overlapping artists, genres etc
