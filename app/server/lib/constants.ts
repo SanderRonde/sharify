@@ -14,3 +14,4 @@ export const SPOTIFY_HOST_SCOPES = [...SPOTIFY_PEER_SCOPES];
 export const SPOTIFY_SECRETS_FILE = path.join(__dirname, '../../../secrets/spotify.json');
 export const HOST_URL = Util.isDev() ? `http://localhost:${IO.get().port}` : '//TODO:';
 export const REDIRECT_PATH = '/api/permission_callback';
+export const SPOTIFY_COLOR = '#1ed760';

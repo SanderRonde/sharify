@@ -1,6 +1,7 @@
-import { SPOTIFY_HOST_SCOPES, REDIRECT_PATH, HOST_URL } from './constants';
+import { SPOTIFY_HOST_SCOPES, REDIRECT_PATH, HOST_URL, SPOTIFY_PEER_SCOPES, SPOTIFY_COLOR } from './constants';
 import { Spotify } from './spotify';
 import * as express from 'express';
+import * as QRCode from 'qrcode';
 import { Rooms } from './rooms';
 
 export function initRoutes(app: express.Express) {
@@ -29,36 +30,63 @@ export function initRoutes(app: express.Express) {
             host: boolean;
         };
 
-		// Add to room (if possible)
+        // Add to room (if possible)
         Rooms.addToRoom(state.room, await authData.json(), state.host);
 
-		// Redirect to room
-		res.redirect(302, `${HOST_URL}/room/${state.room}`);
+        // Redirect to room
+        res.redirect(302, `${HOST_URL}/room/${state.room}`);
 	});
-	app.get('/room/:id', async (req, res) => {
-		const roomID = req.params['id'];
-		const room = Rooms.get(roomID);
-		if (!room) {
-			res.status(404);
-			res.write('No room with that ID');
-			res.end();
-			return;
-		}
+	app.get('/room/:id/join', async (req, res) => {
+		const room = Rooms.get(req.params['id'], res);
+		if (!room) return;
 
-		// TODO: make this something fancy
-		res.status(200);
-		const hostInfo = await (async() => {
-			if (!room.host) return 'None';
-			const info =await room.host.getInfo();
-			return `${info.name} (${info.email})`;
-		})();
-		const membersInfos = await Promise.all(room.members.map((member) => {
-			return member.getInfo();
-		}));
-		const memberData = membersInfos.map(({ email, name }) => {
-			return `${name} (${email})`
-		});
-		res.write(`Welcome to the room. Host is ${hostInfo}.\n Current members are:\n ${memberData.join('\n')}`);
-		res.end();
+		const inviteLink = await Spotify.Authentication.generatePermissionURL(
+            SPOTIFY_PEER_SCOPES,
+            JSON.stringify({
+                room: room.id,
+                host: false,
+            })
+		);
+		res.redirect(302, inviteLink);
 	});
+    app.get('/room/:id', async (req, res) => {
+        const room = Rooms.get(req.params['id'], res);
+		if (!room) return;
+
+        // TODO: make this something fancy
+        res.status(200);
+        const hostInfo = await (async () => {
+            if (!room.host) return 'None';
+            const info = await room.host.getInfo();
+            return `${info.name} (${info.email})`;
+        })();
+        const membersInfos = await Promise.all(
+            room.members.map((member) => {
+                return member.getInfo();
+            })
+        );
+        const memberData = membersInfos.map(({ email, name }) => {
+            return `${name} (${email})`;
+		});
+		const inviteLink = `${HOST_URL}/room/${room.id}/join`;
+		const qrData = await QRCode.toString(inviteLink, {
+			color: {
+				dark: SPOTIFY_COLOR,
+				light: '#ffffff'
+			},
+			type: 'svg'
+		});
+        res.write(
+			`<html><head><title>${room.id}</title></head><body>
+			Welcome to the room. <br>
+			Host is ${hostInfo}.<br> 
+			Current members are:<br><ul> ${memberData.map((data) => {
+				return `<li>${data}</li>`;
+			}).join('')}
+			<a href="${inviteLink}" target="_blank">Invite link</a>
+			<svg>${qrData}</svg>
+			</body></html>`
+        );
+        res.end();
+    });
 }

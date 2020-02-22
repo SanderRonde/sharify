@@ -1,6 +1,7 @@
 import { ROOM_ID_LENGTH, ROOM_TIMEOUT } from "./constants";
 import { SpotifyTypes } from "../types/spotify";
 import { Spotify } from "./spotify";
+import * as express from 'express';
 import { Util } from "./util";
 
 const roomMap: Map<string,Room> = new Map();
@@ -81,8 +82,16 @@ export namespace Rooms {
 		return new Room();
 	}
 
-	export function get(id: string) {
-		return roomMap.get(id);
+	export function get(id: string): Room|null;
+	export function get(id: string, res: express.Response): Room|null;
+	export function get(id: string, res?: express.Response): Room|null {
+		const room = roomMap.get(id);
+		if (!room && res) {
+			res.status(404);
+            res.write('No room with that ID');
+            res.end();
+		}
+		return room || null;
 	}
 
 	export async function addToRoom(roomID: string, authData: SpotifyTypes.Endpoints.AuthToken, isHost: boolean) {
