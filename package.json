@@ -16,6 +16,7 @@
 		"body-parser": "^1.19.0",
 		"cookie-parser": "^1.4.4",
 		"express": "^4.17.1",
+		"express-ws": "^4.0.0",
 		"fs-extra": "^8.1.0",
 		"morgan": "^1.9.1",
 		"node-fetch": "^2.6.0",
@@ -25,6 +26,7 @@
 	"devDependencies": {
 		"@types/cookie-parser": "^1.4.2",
 		"@types/express": "^4.17.2",
+		"@types/express-ws": "^3.0.0",
 		"@types/fs-extra": "^8.1.0",
 		"@types/morgan": "^1.7.37",
 		"@types/node-fetch": "^2.5.4",
@@ -35,8 +37,8 @@
 	"scripts": {
 		"compile": "tsc --build tsconfig.json",
 		"watch": "tsc --build --watch tsconfig.json",
-		"watch:client": "tsc --build --watch app/client/tsconfig.json",
-		"watch:server": "tsc --build --watch app/server/tsconfig.json",
+		"watch:client": "tsc -p app/client/tsconfig.json -w",
+		"watch:server": "tsc -p app/server/tsconfig.json -w",
 		"start": "nodemon",
 		"dev": "nodemon --dev"
 	}

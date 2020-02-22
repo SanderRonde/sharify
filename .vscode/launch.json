@@ -1,0 +1,38 @@
+{
+	// Use IntelliSense to learn about possible attributes.
+	// Hover to view descriptions of existing attributes.
+	// For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+	"version": "0.2.0",
+	"configurations": [
+		{
+			"type": "node",
+			"request": "launch",
+			"name": "Launch Program (dev)",
+			"skipFiles": [
+				"<node_internals>/**"
+			],
+			"program": "${workspaceFolder}/app/server/app.js",
+			"args": [
+				"--port", "1234",
+				"--dev"
+			],
+			"outFiles": [
+				"${workspaceFolder}/**/*.js"
+			]
+		}, {
+			"type": "node",
+			"request": "launch",
+			"name": "Launch Program",
+			"skipFiles": [
+				"<node_internals>/**"
+			],
+			"program": "${workspaceFolder}/app/server/app.js",
+			"args": [
+				"--port", "1234"
+			],
+			"outFiles": [
+				"${workspaceFolder}/**/*.js"
+			]
+		}
+	]
+}

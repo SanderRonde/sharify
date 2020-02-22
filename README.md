@@ -18,6 +18,6 @@ Matchmaking system for multiple Spotify users to create a list which has songs b
 - - [ ] Invite page
 - - [ ] Playlist page
 - [ ] Support data visualisation
-- [ ] Allow sharing of links to others so they can connect to the session (QR?)
+- [x] Allow sharing of links to others so they can connect to the session (QR?)
 - [ ] **(bonus):** show users the overlapping artists, genres etc
 - [ ] **(bonus):** add buttons for controlling those parameters

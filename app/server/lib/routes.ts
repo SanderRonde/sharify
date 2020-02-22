@@ -1,10 +1,10 @@
 import { SPOTIFY_HOST_SCOPES, REDIRECT_PATH, HOST_URL, SPOTIFY_PEER_SCOPES, SPOTIFY_COLOR } from './constants';
 import { Spotify } from './spotify';
-import * as express from 'express';
+import * as ws from 'express-ws';
 import * as QRCode from 'qrcode';
 import { Rooms } from './rooms';
 
-export function initRoutes(app: express.Express) {
+export function initRoutes(app: ws.Application) {
     app.get('/new_room', async (_, res) => {
         const room = Rooms.create();
         const url = Spotify.Authentication.generatePermissionURL(
@@ -31,7 +31,7 @@ export function initRoutes(app: express.Express) {
         };
 
         // Add to room (if possible)
-        Rooms.addToRoom(state.room, await authData.json(), state.host);
+        await Rooms.addToRoom(state.room, await authData.json(), state.host);
 
         // Redirect to room
         res.redirect(302, `${HOST_URL}/room/${state.room}`);
@@ -77,16 +77,38 @@ export function initRoutes(app: express.Express) {
 			type: 'svg'
 		});
         res.write(
-			`<html><head><title>${room.id}</title></head><body>
+			`<html><head><title>Room ${room.id}</title></head><body>
 			Welcome to the room. <br>
-			Host is ${hostInfo}.<br> 
-			Current members are:<br><ul> ${memberData.map((data) => {
+			Host is <div id="hostInfo">${hostInfo}</div>.<br> 
+			Current members are:<br><ul id="members"> ${memberData.map((data) => {
 				return `<li>${data}</li>`;
 			}).join('')}
+			</ul>
 			<a href="${inviteLink}" target="_blank">Invite link</a>
 			<svg>${qrData}</svg>
+			<script src="/room/room.js" type="module"></script>
 			</body></html>`
         );
         res.end();
-    });
+	});
+	app.ws('/room/:id', (ws, req) => {
+		const id = req.params['id'];
+		const room = Rooms.get(id);
+		
+		if (!room) {
+			ws.send({
+				type: 'connect',
+				success: false,
+				error: 'No room found'
+			});
+			return;
+		}
+
+		ws.onclose = () => {
+			room.unsubscribe(ws);
+		}
+		room.subscribe(ws, (message) => {
+			ws.send(JSON.stringify(message));
+		});
+	});
 }
