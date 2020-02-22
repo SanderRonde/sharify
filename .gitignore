@@ -105,3 +105,5 @@ dist
 app/**/*.d.ts
 app/**/*.map
 app/**/*.js
+!app/server/types/**/*.d.ts
+.prettierrc
