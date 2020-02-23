@@ -320,5 +320,9 @@ export namespace SpotifyTypes {
 		}
 
 		export interface CreatePlaylist extends FullPlaylist {}
+
+		export interface Artists {
+			artists: FullArtist[];
+		}
 	}
 }

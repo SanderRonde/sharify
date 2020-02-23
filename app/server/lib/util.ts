@@ -15,4 +15,16 @@ export namespace Util {
 	export function wait(time: number) {
 		return new Promise((resolve) => setTimeout(resolve, time));
 	}
+
+	export function flat<V>(arr: (V|V[])[]): V[] {
+		const result: V[] = [];
+		for (const item of arr) {
+			if (Array.isArray(item)) {
+				result.push(...item);
+			} else {
+				result.push(item);
+			}
+		}
+		return result;
+	}
 }

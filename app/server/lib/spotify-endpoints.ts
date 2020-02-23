@@ -1,5 +1,6 @@
-import { Spotify } from './spotify';
 import { SpotifyTypes } from '../types/spotify';
+import { Spotify } from './spotify';
+import { Util } from './util';
 
 export namespace SpotifyEndpoints {
     export class SpotifyEndpoints {
@@ -61,6 +62,8 @@ export namespace SpotifyEndpoints {
                 },
             });
         }
+
+        // TODO: we can cache recommendations
 
         recommendations(
             options: {
@@ -165,6 +168,39 @@ export namespace SpotifyEndpoints {
 				uris: uris.join(', '),
 				position
 			}));
-		}
+        }
+
+        private _splitIntoGroups<V>(value: V[], maxLength: number): V[][] {
+            const groups: V[][] = [];
+            while (value.length > maxLength) {
+                groups.push(value.splice(0, maxLength));
+            }
+            return groups;
+        }
+        
+        // TODO: we can cache artists
+
+        async artists(artistIDs: string[]): Promise<null|Spotify.PartialResponse<SpotifyTypes.Endpoints.Artists>> {
+            const results = (await Promise.all(this._splitIntoGroups(artistIDs, 50).map((group) => {
+                return this.api.get<{}>('/v1/artists', {
+                    query: {
+                        ids: group.join(',')
+                    }
+                });
+            }))) as (Spotify.ExtendedResponse<SpotifyTypes.Endpoints.Artists>|null)[];
+            for (const result of results) {
+                if (!result) return null;
+            }
+
+            return {
+                async json() {
+                    return {
+                        artists: Util.flat(await Promise.all(results.map(async (result) => {
+                            return (await result!.json()).artists;
+                        })))
+                    }
+                }
+            }
+        }
     }
 }

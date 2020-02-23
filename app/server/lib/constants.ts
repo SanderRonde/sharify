@@ -17,3 +17,4 @@ export const REDIRECT_PATH = '/api/permission_callback';
 export const SPOTIFY_COLOR = '#1ed760';
 export const DEFAULT_TOP_LIMIT = 100;
 export const DEFAULT_TOP_TIME_RANGE = 'medium_term';
+export const SPOTIFY_RECOMMENDATIONS_AMOUNT = 100;

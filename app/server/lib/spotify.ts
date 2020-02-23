@@ -9,6 +9,10 @@ import * as fs from 'fs-extra';
 import { Util } from './util';
 
 export namespace Spotify {
+    export interface PartialResponse<R> {
+        json(): Promise<R>;
+    }
+
     export interface ExtendedResponse<R> extends Response {
         clone(): ExtendedResponse<R>;
         json(): Promise<R>;
