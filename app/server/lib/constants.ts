@@ -15,3 +15,5 @@ export const SPOTIFY_SECRETS_FILE = path.join(__dirname, '../../../secrets/spoti
 export const HOST_URL = Util.isDev() ? `http://localhost:${IO.get().port}` : '//TODO:';
 export const REDIRECT_PATH = '/api/permission_callback';
 export const SPOTIFY_COLOR = '#1ed760';
+export const DEFAULT_TOP_LIMIT = 100;
+export const DEFAULT_TOP_TIME_RANGE = 'medium_term';

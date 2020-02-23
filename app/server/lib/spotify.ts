@@ -19,22 +19,23 @@ export namespace Spotify {
             private _accessToken!: string;
             private _refreshToken!: string;
             public endpoints = new SpotifyEndpoints.SpotifyEndpoints(this);
-            public id: string;
+            public id!: string;
 
             constructor({
                 accessToken,
                 expiresIn,
                 refreshToken,
-                id
             }: {
                 accessToken: string;
                 refreshToken: string;
                 expiresIn: number;
-                id: string;
             }) {
-                this.id = id;
                 this._accessToken = accessToken;
                 this.setRefresh(refreshToken, expiresIn);
+            }
+
+            setID(id: string) {
+                this.id = id;
             }
 
             private _refresher: NodeJS.Timeout | null = null;
