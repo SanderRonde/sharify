@@ -55,17 +55,12 @@ export function initRoutes(app: ws.Application) {
 
         // TODO: make this something fancy
         res.status(200);
-        const hostInfo = await (async () => {
+        const hostInfo = (() => {
             if (!room.host) return 'None';
-            const info = await room.host.getInfo();
+            const info = room.host.info;
             return `${info.name} (${info.email})`;
         })();
-        const membersInfos = await Promise.all(
-            room.members.map((member) => {
-                return member.getInfo();
-            })
-        );
-        const memberData = membersInfos.map(({ email, name }) => {
+        const memberData = room.members.map(( { info: { email, name } }) => {
             return `${name} (${email})`;
 		});
 		const inviteLink = `${HOST_URL}/room/${room.id}/join`;
