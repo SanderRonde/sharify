@@ -50,6 +50,10 @@ export namespace SpotifyTypes {
 		width?: number | null;
 	}
 
+	export interface Restrictions {
+		reason: string;
+	}
+
 	export interface SimpleAlbum {
 		album_group?: 'album' | 'single' | 'compilation' | 'appears_on';
 		album_type: 'album' | 'single' | 'compilation';
@@ -62,9 +66,7 @@ export namespace SpotifyTypes {
 		name: string;
 		release_date: string;
 		release_date_precision: string;
-		restrictions?: {
-			reason: string;
-		};
+		restrictions?: Restrictions;
 		type: 'album';
 		uri: string;
 	}
@@ -94,9 +96,7 @@ export namespace SpotifyTypes {
 		id: string;
 		is_playable: boolean;
 		linked_from: LinkedTrack;
-		restrictions: {
-			reason: string;
-		};
+		restrictions: Restrictions;
 		name: string;
 		popularity: number;
 		preview_url: string | null;
@@ -142,6 +142,87 @@ export namespace SpotifyTypes {
 	export interface Followers {
 		href: string|null;
 		total: number;
+	}
+
+	export interface Paging<V> {
+		href: string;
+		items: V[];
+		limit: number;
+		next: string|null;
+		offset: number;
+		previous: string|null;
+		total: number;
+	}
+
+	export interface FullArtist extends SimpleArtist {
+		followers: Followers;
+		genres: string[];
+		images: Image[];
+		popularity: number;
+	}
+
+	export interface SimpleTrack {
+		artists: SimpleArtist[];
+		available_markets: string[];
+		disc_number: number;
+		duration_ms: number;
+		explicit: boolean;
+		external_urls: ExternalURLs;
+		href: String;
+		id: string;
+		is_playable: boolean;
+		linked_from: LinkedTrack;
+		restrictions: Restrictions;
+		name: string;
+		preview_url: string;
+		track_number: number;
+		type: 'track';
+		uri: string;
+		is_local: boolean;
+	}
+
+	export interface SeedObject {
+		alterFilteringSize: number;
+		afterRelinkingSIze: number;
+		href: string|null;
+		id: string;
+		initialPoolSize: number;
+		type: 'artist'|'track'|'genre';
+	}
+
+	export interface PublicUser {
+		display_name: string;
+		external_urls: ExternalURLs;
+		followers: Followers;
+		href: string;
+		id: string;
+		images: Image[];
+		type: 'user';
+		uri: string;
+	}
+
+	export interface PlaylistTrack {
+		added_at: number;
+		added_by: PublicUser;
+		is_local: boolean;
+		track: Track;
+	}
+
+	export interface FullPlaylist {
+		collaborative: boolean;
+		description: string;
+		external_urls: ExternalURLs;
+		followers: Followers;
+		href: string;
+		id: string;
+		images: Image[];
+		name: string;
+		owner: PublicUser
+		public: boolean|null;
+		snapshot_id: string;
+		tracks: Paging<PlaylistTrack>;
+		type: 'playlist';
+		uri: string;
 	}
 
 	export namespace Endpoints {
@@ -228,5 +309,16 @@ export namespace SpotifyTypes {
 			type: 'user';
 			uri: string;
 		}
+
+		export type TopArtists = Paging<FullArtist>;
+
+		export type TopTracks = Paging<Track>;
+
+		export interface Recommendations {
+			seeds: SeedObject[];
+			tracks: SimpleTrack[];
+		}
+
+		export interface CreatePlaylist extends FullPlaylist {}
 	}
 }

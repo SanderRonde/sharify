@@ -1,6 +1,7 @@
 import { SPOTIFY_SECRETS_FILE, HOST_URL, REDIRECT_PATH } from './constants';
 import { SpotifyEndpoints } from './spotify-endpoints';
 import { SpotifyTypes } from '../types/spotify';
+import * as querystring from 'querystring';
 import { Response } from 'node-fetch';
 import * as express from 'express';
 import fetch from 'node-fetch';
@@ -17,24 +18,23 @@ export namespace Spotify {
         export class APIInstance {
             private _accessToken!: string;
             private _refreshToken!: string;
-            // TODO:
             public endpoints = new SpotifyEndpoints.SpotifyEndpoints(this);
+            public id: string;
 
             constructor({
                 accessToken,
                 expiresIn,
                 refreshToken,
+                id
             }: {
                 accessToken: string;
                 refreshToken: string;
                 expiresIn: number;
+                id: string;
             }) {
-                this.setToken(accessToken);
+                this.id = id;
+                this._accessToken = accessToken;
                 this.setRefresh(refreshToken, expiresIn);
-            }
-
-            setToken(token: string) {
-                this._accessToken = token;
             }
 
             private _refresher: NodeJS.Timeout | null = null;
@@ -61,7 +61,7 @@ export namespace Spotify {
                     expires_in,
                 } = await response.json();
 
-                this.setToken(access_token);
+                this._accessToken = access_token;
                 this.setRefresh(refresh_token, expires_in);
 
                 return await this.testAuth();
@@ -158,9 +158,34 @@ export namespace Spotify {
                 }
             }
 
-            async get<R>(path: string): Promise<ExtendedResponse<R> | null> {
+            private _filterObject<O extends {
+                [key: string]: any;
+            }>(obj: O): Partial<O> {
+                const newObj: Partial<O> = {};
+                for (const key in obj) {
+                    if (obj[key] !== undefined) {
+                        newObj[key] = obj[key];
+                    }
+                }
+                return newObj;
+            }
+
+            async get<R>(
+                path: string,
+                {
+                    query = {},
+                }: {
+                    query?: {
+                        [key: string]: string|number|undefined;
+                    };
+                } = {}
+            ): Promise<ExtendedResponse<R> | null> {
                 const ret = await this.wrapRequest(path, () => {
-                    return fetch(`${APIInstance.SPOTIFY_BASE}${path}`, {
+                    const filteredQuery = this._filterObject(query);
+                    const qs = Object.keys(filteredQuery).length
+                        ? `?${querystring.stringify(filteredQuery)}`
+                        : '';
+                    return fetch(`${APIInstance.SPOTIFY_BASE}${path}${qs}`, {
                         headers: this._getHeaders(),
                     });
                 });

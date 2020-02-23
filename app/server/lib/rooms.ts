@@ -14,42 +14,44 @@ export interface UserInfo {
 }
 
 export class RoomMember {
-	private _api = new Spotify.API.APIInstance({
-		accessToken: this._auth.access_token,
-		expiresIn: this._auth.expires_in,
-		refreshToken: this._auth.refresh_token
-	});
+	private _api!: Spotify.API.APIInstance;
 
-	constructor(private _auth: SpotifyTypes.Endpoints.AuthToken) {}
+	constructor(private _auth: SpotifyTypes.Endpoints.AuthToken) { }
+
+	async init() {
+		this._info = await this._getSpotifyInfo();
+		this._api = new Spotify.API.APIInstance({
+			accessToken: this._auth.access_token,
+			expiresIn: this._auth.expires_in,
+			refreshToken: this._auth.refresh_token,
+			id: this.info.id
+		});
+		return this;
+	}
 
 	private _info: null|UserInfo = null;
 	private async _getSpotifyInfo(): Promise<UserInfo> {
-		this._info = await (async () => {
-			const response = await this._api.endpoints.me();
-			if (!response) return {
-				email: '?',
-				id: '?',
-				name: '?'
-			};
-			const { display_name, email, id } = await response.json();
-			return {
-				name: display_name,
-				email, id
-			}
-		})();
-		return this._info;
+		const response = await this._api.endpoints.me();
+		if (!response) return {
+			email: '?',
+			id: '?',
+			name: '?'
+		};
+		const { display_name, email, id } = await response.json();
+		return {
+			name: display_name,
+			email, id
+		}
 	}
 
-	public getInfo(): Promise<UserInfo> {
-		if (this._info) return Promise.resolve(this._info);
-		return this._getSpotifyInfo();
+	public get info() {
+		return this._info!;
 	}
 
 	public async toJSON() {
-		const info = await this.getInfo();
 		return {
-			name: info.name,
-			email: info.email
+			name: this.info.name,
+			email: this.info.email
 		}
 	}
 }
@@ -85,7 +87,7 @@ export class Room {
 		const memberInfos = await Promise.all(this.members.map(async (member) => {
 			return {
 				member: member,
-				info: await member.getInfo()
+				info: member.info
 			};
 		}));
 		const seenMemberIDs = new Set<string>();
@@ -106,23 +108,20 @@ export class Room {
 	}
 
 	public async addMember(authData: SpotifyTypes.Endpoints.AuthToken, isHost: boolean) {
-		const member = new RoomMember(authData);
+		const member = await new RoomMember(authData).init();
 		this.members.push(member);
 		if (isHost) {
 			this.host = member;	
 		}
 
-		console.log('Pushed member');
 		if (!Util.isDev()) {
 			await this._filterUniqueUsers();
 		}
 
 		// If the user was a duplicate and was filtered out,
 		// don't notify others
-		console.log('Checking if theyre still there');
 		if (this.members.indexOf(member) == -1) return;
 
-		console.log('Notifying');
 		this._notify({
 			type: 'join',
 			success: true,

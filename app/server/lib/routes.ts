@@ -79,7 +79,7 @@ export function initRoutes(app: ws.Application) {
         res.write(
 			`<html><head><title>Room ${room.id}</title></head><body>
 			Welcome to the room. <br>
-			Host is <div id="hostInfo">${hostInfo}</div>.<br> 
+			Host is <div id="hostInfo">${hostInfo}</div><br> 
 			Current members are:<br><ul id="members"> ${memberData.map((data) => {
 				return `<li>${data}</li>`;
 			}).join('')}
