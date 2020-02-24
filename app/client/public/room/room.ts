@@ -36,8 +36,11 @@ function handleMessage(message: WebsocketMessages) {
             iframe.height = "500";
             iframe.frameBorder = "0";
 			iframe.allow = "encrypted-media";
+
+			// TODO: refreshing the page removes the iframe
 			
 			document.body.appendChild(iframe);
+			lastFrame = iframe;
             break;
     }
 }

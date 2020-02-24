@@ -27,4 +27,10 @@ export namespace Util {
 		}
 		return result;
 	}
+
+	export function devLog(...args: any[]) {
+		if (isDev()) {
+			console.log(...args);
+		}
+	}
 }

@@ -1,12 +1,12 @@
-import { SPOTIFY_SECRETS_FILE, HOST_URL, REDIRECT_PATH } from './constants';
-import { SpotifyEndpoints } from './spotify-endpoints';
-import { SpotifyTypes } from '../types/spotify';
-import * as querystring from 'querystring';
-import { Response } from 'node-fetch';
-import * as express from 'express';
-import fetch from 'node-fetch';
-import * as fs from 'fs-extra';
-import { Util } from './util';
+import { SPOTIFY_SECRETS_FILE, HOST_URL, REDIRECT_PATH } from "./constants";
+import { SpotifyEndpoints } from "./spotify-endpoints";
+import { SpotifyTypes } from "../types/spotify";
+import * as querystring from "querystring";
+import { Response } from "node-fetch";
+import * as express from "express";
+import fetch from "node-fetch";
+import * as fs from "fs-extra";
+import { Util } from "./util";
 
 export namespace Spotify {
     export interface PartialResponse<R> {
@@ -80,27 +80,27 @@ export namespace Spotify {
                 const response = await this.post<
                     SpotifyTypes.Endpoints.AuthToken
                 >(
-                    '/api/token',
+                    "/api/token",
                     `grant_type=refresh_token&refresh_token=${this._refreshToken}`,
                     {
                         headers: {
-                            'Content-Type': 'application/x-www-form-urlencoded',
+                            "Content-Type": "application/x-www-form-urlencoded",
                             Authorization: `Basic ${Buffer.from(
                                 `${client_id}:${client_secret}`
-                            ).toString('base64')}`,
+                            ).toString("base64")}`,
                         },
-                        base: 'https://accounts.spotify.com',
+                        base: "https://accounts.spotify.com",
                     }
                 );
                 if (!response) return false;
                 return this._checkCreatedToken(response);
             }
 
-            private static readonly SPOTIFY_BASE = 'https://api.spotify.com';
+            private static readonly SPOTIFY_BASE = "https://api.spotify.com";
             private _getHeaders() {
                 return {
-                    Accept: 'application/json',
-                    'Content-Type': 'application/json',
+                    Accept: "application/json",
+                    "Content-Type": "application/json",
                     Authorization: `Bearer ${this._accessToken}`,
                 };
             }
@@ -135,17 +135,17 @@ export namespace Spotify {
                             );
                             if (!(await this.refreshToken())) {
                                 console.log(
-                                    'Failed to refresh token, giving up'
+                                    "Failed to refresh token, giving up"
                                 );
                                 return null;
                             }
                             return this.wrapRequest(path, request);
                         case 429:
                             const retryAfter = response.headers.get(
-                                'Retry-After'
+                                "Retry-After"
                             );
                             await Util.wait(
-                                1000 * (parseInt(retryAfter || '60', 10) + 1)
+                                1000 * (parseInt(retryAfter || "60", 10) + 1)
                             );
                             return this.wrapRequest(path, request);
                         case 503:
@@ -163,9 +163,11 @@ export namespace Spotify {
                 }
             }
 
-            private _filterObject<O extends {
-                [key: string]: any;
-            }>(obj: O): Partial<O> {
+            private _filterObject<
+                O extends {
+                    [key: string]: any;
+                }
+            >(obj: O): Partial<O> {
                 const newObj: Partial<O> = {};
                 for (const key in obj) {
                     if (obj[key] !== undefined) {
@@ -181,18 +183,21 @@ export namespace Spotify {
                     query = {},
                 }: {
                     query?: {
-                        [key: string]: string|number|undefined;
+                        [key: string]: string | number | undefined;
                     };
                 } = {}
             ): Promise<ExtendedResponse<R> | null> {
-                const ret = await this.wrapRequest(path, () => {
+                const ret = await this.wrapRequest(path, async () => {
                     const filteredQuery = this._filterObject(query);
                     const qs = Object.keys(filteredQuery).length
                         ? `?${querystring.stringify(filteredQuery)}`
-                        : '';
-                    return fetch(`${APIInstance.SPOTIFY_BASE}${path}${qs}`, {
+                        : "";
+                    const url = `${APIInstance.SPOTIFY_BASE}${path}${qs}`;
+                    const result = await fetch(url, {
                         headers: this._getHeaders(),
                     });
+                    console.log(`-> GET ${url} ${result.status}`);
+                    return result;
                 });
                 return ret;
             }
@@ -208,18 +213,21 @@ export namespace Spotify {
                     base?: string;
                 } = {}
             ): Promise<ExtendedResponse<R> | null> {
-                return this.wrapRequest(path, () => {
-                    return fetch(
-                        `${options.base || APIInstance.SPOTIFY_BASE}${path}`,
-                        {
-                            method: method,
-                            headers: {
-                                ...this._getHeaders(),
-                                ...(options.headers || {}),
-                            },
-                            body: data,
-                        }
+                return this.wrapRequest(path, async () => {
+                    const url = `${options.base ||
+                        APIInstance.SPOTIFY_BASE}${path}`;
+                    const req = await fetch(url, {
+                        method: method,
+                        headers: {
+                            ...this._getHeaders(),
+                            ...(options.headers || {}),
+                        },
+                        body: data,
+                    });
+                    console.log(
+                        `-> ${method.toUpperCase()} ${url} ${req.status}`
                     );
+                    return req;
                 });
             }
 
@@ -233,7 +241,7 @@ export namespace Spotify {
                     base?: string;
                 } = {}
             ): Promise<ExtendedResponse<R> | null> {
-                return this._postLike('post', path, data, options);
+                return this._postLike("post", path, data, options);
             }
 
             delete<R>(
@@ -246,12 +254,12 @@ export namespace Spotify {
                     base?: string;
                 } = {}
             ): Promise<ExtendedResponse<R> | null> {
-                return this._postLike('delete', path, data, options);
+                return this._postLike("delete", path, data, options);
             }
 
             async testAuth() {
                 try {
-                    const response = await this.get('/v1/me');
+                    const response = await this.get("/v1/me");
                     return response && response.status === 200;
                 } catch (e) {}
                 return false;
@@ -271,12 +279,12 @@ export namespace Spotify {
             try {
                 return (secrets = JSON.parse(
                     await fs.readFile(SPOTIFY_SECRETS_FILE, {
-                        encoding: 'utf8',
+                        encoding: "utf8",
                     })
                 ) as Secrets);
             } catch (e) {
                 console.log(e, SPOTIFY_SECRETS_FILE);
-                console.log('Failed to read spotify secrets');
+                console.log("Failed to read spotify secrets");
                 process.exit(1);
             }
         }
@@ -291,7 +299,7 @@ export namespace Spotify {
             return `https://accounts.spotify.com/authorize?client_id=${
                 secrets.client_id
             }&response_type=code&redirect_uri=${REDIRECT_URI}&scope=${scopes.join(
-                '%20'
+                "%20"
             )}&state=${state}`;
         }
 
@@ -304,7 +312,7 @@ export namespace Spotify {
                 // They didn't accept
                 res.status(200);
                 // TODO:
-                res.write('Accepteer pls');
+                res.write("Accepteer pls");
                 res.end();
                 return null;
             }
@@ -312,28 +320,28 @@ export namespace Spotify {
                 // Nothing passed at all
                 res.status(400);
                 // TODO:
-                res.write('Invalid request');
+                res.write("Invalid request");
                 res.end();
                 return null;
             }
 
             const { client_id, client_secret } = await getSecrets();
             const response = (await fetch(
-                'https://accounts.spotify.com/api/token',
+                "https://accounts.spotify.com/api/token",
                 {
-                    method: 'post',
+                    method: "post",
                     headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
+                        "Content-Type": "application/x-www-form-urlencoded",
                         Authorization: `Basic ${Buffer.from(
                             `${client_id}:${client_secret}`
-                        ).toString('base64')}`,
+                        ).toString("base64")}`,
                     },
                     body: `grant_type=authorization_code&code=${code}&redirect_uri=${REDIRECT_URI}`,
                 }
             )) as ExtendedResponse<SpotifyTypes.Endpoints.AuthToken>;
             if (!response) {
                 res.status(400);
-                res.write('Failed to authenticate');
+                res.write("Failed to authenticate");
                 res.end();
                 return null;
             }
