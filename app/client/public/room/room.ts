@@ -46,7 +46,9 @@ function handleMessage(message: WebsocketMessages) {
 }
 
 function connectToWS() {
-    const ws = new WebSocket(`ws://${location.host}${location.pathname}`);
+    const isSecure = location.protocol === 'https:';
+    const protocol = isSecure ? 'wss:' : 'ws';
+    const ws = new WebSocket(`${protocol}//${location.host}${location.pathname}`);
     ws.onmessage = (message) => {
         const data = JSON.parse(message.data);
         handleMessage(data);
