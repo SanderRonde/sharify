@@ -33,7 +33,6 @@ namespace App {
         const app = (express() as unknown) as ws.Application;
         require('express-ws')(app);
         app.use((_req, _res, next) => {
-            debugger;
             next();
         });
 

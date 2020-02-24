@@ -127,7 +127,7 @@ export namespace SpotifyEndpoints {
 				...rest
             } = options;
             return this.api.get<SpotifyTypes.Endpoints.Recommendations>(
-                `/v1/me/recommendations`,
+                `/v1/recommendations`,
                 {
                     query: {
                         limit: limit + '',
@@ -156,28 +156,46 @@ export namespace SpotifyEndpoints {
 				collaborative: isCollaborative,
 				description
 			}));
-		}
-
-		addToPlaylist(playlistID: string, {
-			position, uris = []
-		}: {
-			uris?: string[];
-			position?: number;
-		} = {}) {
-			return this.api.post<{
-				snapshot_id: string;
-			}>(`/v1/playlists/${playlistID}/tracks`, JSON.stringify({
-				uris: uris.join(', '),
-				position
-			}));
         }
-
+        
         private _splitIntoGroups<V>(value: V[], maxLength: number): V[][] {
             const groups: V[][] = [];
             while (value.length > maxLength) {
                 groups.push(value.splice(0, maxLength));
             }
+            groups.push(value);
             return groups;
+        }
+
+		async addToPlaylist(playlistID: string, {
+			position, uris = []
+		}: {
+			uris?: string[];
+			position?: number;
+		} = {}): Promise<null|Spotify.PartialResponse<{
+            snapshot_id: string;
+        }>> {
+            const groups = this._splitIntoGroups(uris, 100);
+            const results = await Promise.all(groups.map((group) => {
+                return this.api.post<{
+                    snapshot_id: string;
+                }>(`/v1/playlists/${playlistID}/tracks`, JSON.stringify({
+                    uris: group,
+                    position
+                }));    
+            }));
+            for (const result of results) {
+                if (!result) return null;
+            }
+
+            const lastID = (await results[results.length - 1]!.json()).snapshot_id;
+			return {
+                json() {
+                    return Promise.resolve({
+                        snapshot_id: lastID
+                    });
+                }
+            }
         }
         
         // TODO: we can cache artists
@@ -201,6 +219,47 @@ export namespace SpotifyEndpoints {
                             return (await result!.json()).artists;
                         })))
                     }
+                }
+            }
+        }
+
+        playlistTracks(playlistID: string, config: {
+            fields?: string;
+            limit?: number;
+            offset?: number;
+            market?: string;
+        } = {}) {
+            return this.api.get<SpotifyTypes.Endpoints.PlaylistTracks>(
+                `/v1/playlists/${playlistID}/tracks`,
+                {
+                    query: config,
+                }
+            );
+        }
+
+        async deleteTracks(playlistID: string, trackIDs: string[]) {
+            const groups = this._splitIntoGroups(trackIDs, 100);
+            const results = await Promise.all(groups.map((group) => {
+                return this.api.delete<{
+                    snapshot_id: string;
+                }>(`/v1/playlists/${playlistID}/tracks`, JSON.stringify({
+                    tracks: group.map((id) => {
+                        return {
+                            uri: id
+                        }
+                    })
+                }));    
+            }));
+            for (const result of results) {
+                if (!result) return null;
+            }
+
+            const lastID = (await results[results.length - 1]!.json()).snapshot_id;
+			return {
+                json() {
+                    return Promise.resolve({
+                        snapshot_id: lastID
+                    });
                 }
             }
         }

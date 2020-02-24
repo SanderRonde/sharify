@@ -197,7 +197,8 @@ export namespace Spotify {
                 return ret;
             }
 
-            post<R>(
+            private _postLike<R>(
+                method: string,
                 path: string,
                 data: string,
                 options: {
@@ -211,7 +212,7 @@ export namespace Spotify {
                     return fetch(
                         `${options.base || APIInstance.SPOTIFY_BASE}${path}`,
                         {
-                            method: 'post',
+                            method: method,
                             headers: {
                                 ...this._getHeaders(),
                                 ...(options.headers || {}),
@@ -220,6 +221,32 @@ export namespace Spotify {
                         }
                     );
                 });
+            }
+
+            post<R>(
+                path: string,
+                data: string,
+                options: {
+                    headers?: {
+                        [key: string]: string;
+                    };
+                    base?: string;
+                } = {}
+            ): Promise<ExtendedResponse<R> | null> {
+                return this._postLike('post', path, data, options);
+            }
+
+            delete<R>(
+                path: string,
+                data: string,
+                options: {
+                    headers?: {
+                        [key: string]: string;
+                    };
+                    base?: string;
+                } = {}
+            ): Promise<ExtendedResponse<R> | null> {
+                return this._postLike('delete', path, data, options);
             }
 
             async testAuth() {

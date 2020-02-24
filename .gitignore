@@ -108,3 +108,4 @@ app/**/*.js
 !app/server/types/**/*.d.ts
 .prettierrc
 !app/shared/ws.d.ts
+.vscode

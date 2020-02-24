@@ -324,5 +324,7 @@ export namespace SpotifyTypes {
 		export interface Artists {
 			artists: FullArtist[];
 		}
+
+		export type PlaylistTracks = Paging<PlaylistTrack>;
 	}
 }

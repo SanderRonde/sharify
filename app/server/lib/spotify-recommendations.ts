@@ -40,7 +40,7 @@ interface TrackRecommendation {
 }
 
 export class UserRecommendations {
-    constructor(private _user: RoomMember) {}
+    constructor(public user: RoomMember) {}
 
     public topTracks: SpotifyTypes.Track[] = [];
     public topArtists: SpotifyTypes.FullArtist[] = [];
@@ -49,11 +49,11 @@ export class UserRecommendations {
 
     private async _fetchTopCategories() {
         const [tracks, artists] = await Promise.all([
-            this._user.api.endpoints.top("tracks", {
+            this.user.api.endpoints.top("tracks", {
                 limit: DEFAULT_TOP_LIMIT,
                 time_range: DEFAULT_TOP_TIME_RANGE,
             }),
-            this._user.api.endpoints.top("artists", {
+            this.user.api.endpoints.top("artists", {
                 limit: DEFAULT_TOP_LIMIT,
                 time_range: DEFAULT_TOP_TIME_RANGE,
             }),
@@ -82,7 +82,7 @@ export class UserRecommendations {
             .sort((a, b) => a.ranking - b.ranking)
             // Remove any object links
             .map((value) => JSON.parse(JSON.stringify(value)));
-        for (let i = sorted.length - 1; i >= 0; i++) {
+        for (let i = sorted.length - 1; i >= 0; i--) {
             const value = sorted[i];
             for (const sortedMatch of sorted) {
                 if (value === sortedMatch) continue;
@@ -153,7 +153,7 @@ export class UserRecommendations {
             return artist.id;
         });
         const trackArtistGenreRanking = genres.length;
-        const trackArtistDetailReq = await this._user.api.endpoints.artists(
+        const trackArtistDetailReq = await this.user.api.endpoints.artists(
             trackArtistIDs
         );
         if (trackArtistDetailReq) {
@@ -192,6 +192,10 @@ export class UserRecommendations {
 export class Recommendations {
     private _members: UserRecommendations[] = [];
     public recommendations: TrackRecommendation[] = [];
+    public playlist: {
+        id: string;
+        lastRecommendations: TrackRecommendation[];
+    }|null = null;
 
     constructor(private _room: Room) {}
 
@@ -203,7 +207,7 @@ export class Recommendations {
         this._room.notify({
             type: "playlistupdate",
             success: true,
-            recommendations: this.recommendations.map(track => track.id)
+            playlistID: this.playlist?.id || null
         });
     }
 
@@ -296,12 +300,22 @@ export class Recommendations {
 		
 		// Fetch based on overlapping values
 		if (this.api && (config.seed_artists?.length || config.seed_genres?.length || config.seed_tracks?.length)) {
-			const response = await this.api.endpoints.recommendations({
-				limit: amount,
-				seed_artists: config.seed_artists?.slice(0, 5),
-				seed_genres: config.seed_genres?.slice(0, 5),
-				seed_tracks: config.seed_tracks?.slice(0, 5),
-			});
+            const requestConfig: RecommendationConfig = {
+                limit: amount
+            };
+
+            // Make sure we're only doing 5 seeds max
+            let total: number = 0;
+            requestConfig.seed_tracks = config.seed_tracks.slice(0, 5)
+            total += config.seed_tracks.length;
+
+            requestConfig.seed_artists = config.seed_artists.slice(0, Math.max(5 - total, 0));
+            total += config.seed_artists.length;
+
+            requestConfig.seed_genres = config.seed_genres.slice(0, Math.max(5 - total, 0));
+            total += config.seed_genres.length;
+            
+			const response = await this.api.endpoints.recommendations(requestConfig);
 			if (response) {
 				recommendations = this._filterUniqueTracks([
 					...recommendations,
@@ -334,12 +348,22 @@ export class Recommendations {
 		];
 
 		if (this.api) {
-			const response = await this.api.endpoints.recommendations({
-				limit: amount,
-				seed_artists: config.seed_artists?.slice(0, 5),
-				seed_genres: config.seed_genres?.slice(0, 5),
-				seed_tracks: config.seed_tracks?.slice(0, 5),
-			});
+            const requestConfig: RecommendationConfig = {
+                limit: amount
+            };
+
+            // Make sure we're only doing 5 seeds max
+            let total: number = 0;
+            requestConfig.seed_tracks = config.seed_tracks.slice(0, 5)
+            total += config.seed_tracks.length;
+
+            requestConfig.seed_artists = config.seed_artists.slice(0, Math.max(5 - total, 0));
+            total += config.seed_artists.length;
+
+            requestConfig.seed_genres = config.seed_genres.slice(0, Math.max(5 - total, 0));
+            total += config.seed_genres.length;
+            
+			const response = await this.api.endpoints.recommendations(requestConfig);
 			if (response) {
 				recommendations = this._filterUniqueTracks([
 					...recommendations,
@@ -351,8 +375,75 @@ export class Recommendations {
         return recommendations.slice(0, amount);
     }
 
+    private _formatMemberNames() {
+        const names = this._members.map(m => m.user.info.name);
+        if (names.length === 1) {
+            return names[0];
+        }
+        return `${names.slice(0, -1).join(', ')} and ${names.slice(-1)[0]}`
+    }
+
+    private async _createPlaylist() {
+        // TODO: look at whether playlists update instantly-ish
+        if (!this.api) return null;
+        // Create playlist
+        const playlistResponse = await this.api.endpoints.createPlaylist(`Sharify ${new Date().toLocaleString()}`, {
+            description: `Sharify playlist generated on ${new Date().toLocaleDateString()} with ${this._formatMemberNames()}`,
+            // TODO: this may become an option for the user
+            isCollaborative: true,
+            isPublic: false
+        });
+        if (!playlistResponse) return null;
+
+        const playlist = await playlistResponse.json();
+
+        this.playlist = {
+            id: playlist.id,
+            lastRecommendations: []
+        }
+        return this.playlist;
+    }
+
+    private async _clearPlaylist() {
+        // Get all tracks in the playlist
+        let tracks = this.playlist!.lastRecommendations.map(r => r.id);
+        if (tracks.length === 0) {
+            const response = await this.api!.endpoints.playlistTracks(this.playlist!.id);
+            if (response) {
+                tracks = (await response.json()).items.map((item) => {
+                    return item.track.id;
+                });
+            }
+        }
+
+        const response = await this.api!.endpoints.deleteTracks(this.playlist!.id, 
+            tracks.map(id => `spotify:track:${id}`));
+        
+        return !!response;
+    }
+
+    private async _addTracksToPlaylist() {
+        if (!this.playlist) {
+            if (!await this._createPlaylist()) return null;
+        } else {
+            if (!await this._clearPlaylist()) return null;
+        }
+
+        // Add tracks to playlist
+        const addTracksResponse = await this.api!.endpoints.addToPlaylist(this.playlist!.id, {
+            uris: this.recommendations.map(track => `spotify:track:${track.id}`)
+        });
+        if (!addTracksResponse) return null;
+
+        this.playlist!.lastRecommendations = this.recommendations;
+
+        return this.playlist!.id;
+    }
+
     private async _updateRecommendations(amount: number) {
         this.recommendations = await this._getRecommendations(amount);
+        const playlistID = await this._addTracksToPlaylist();
+        if (!playlistID) return;
 
         this._notifyChanges();
     }
