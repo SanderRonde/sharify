@@ -380,8 +380,6 @@ export class Recommendations {
             }),
         ];
 
-        console.log(recommendations);
-
         if (recommendations.length >= amount) {
             return recommendations.slice(0, amount);
         }
