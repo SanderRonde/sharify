@@ -1,4 +1,7 @@
 {
+	"compilerOptions": {
+		"target": "es6"
+	},
 	"references": [{
 		"path": "app/server/tsconfig.json"
 	}, {
