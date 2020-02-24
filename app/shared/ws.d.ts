@@ -16,5 +16,5 @@ export type WebsocketMessages = FailableMessage<'join', {
 		isHost: boolean;
 	}[];
 }> | FailableMessage<'playlistupdate', {
-	// TODO:
+	recommendations: string[];
 }> | ErrorMessage<'connect'>;
