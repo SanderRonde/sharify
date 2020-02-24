@@ -21,7 +21,7 @@ export const SPOTIFY_SECRETS_FILE = path.join(
 );
 export const HOST_URL = Util.isDev()
     ? `http://localhost:${IO.get().port}`
-    : "//TODO:";
+    : IO.get().host;
 export const REDIRECT_PATH = "/api/permission_callback";
 export const SPOTIFY_COLOR = "#1ed760";
 export const DEFAULT_TOP_LIMIT = 100;

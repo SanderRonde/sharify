@@ -1,6 +1,7 @@
 export namespace IO {
 	export interface IO {
 		port: number;
+		host: string;
 	}
 
 	function assertArgLength(minLength: number) {
@@ -12,13 +13,18 @@ export namespace IO {
 
 	export function get(): IO {
 		const io: IO = {
-			port: 1234
+			port: 1234,
+			host: ''
 		};
 
 		for (let i = 0; i < process.argv.length; i++) {
 			if (process.argv[i] === '-p' || process.argv[i] === '--port') {
 				assertArgLength(i + 1);
 				io.port = parseInt(process.argv[i + 1]);
+				i++;
+			} else if (process.argv[i] === '--host') {
+				assertArgLength(i + 1);
+				io.host = process.argv[i + 1];
 				i++;
 			} else if (process.argv[i] === '-h' || process.argv[i] === '--help') {
 				console.log('Usage:');
