@@ -35,7 +35,7 @@
 		"typescript": "^3.8.2"
 	},
 	"scripts": {
-		"compile": "tsc --build tsconfig.json",
+		"compile": "tsc -p app/client/tsconfig.json && tsc -p app/server/tsconfig.json",
 		"watch": "tsc --build --watch tsconfig.json",
 		"watch:client": "tsc -p app/client/tsconfig.json -w",
 		"watch:server": "tsc -p app/server/tsconfig.json -w",
