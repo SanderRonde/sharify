@@ -21,11 +21,11 @@ Matchmaking system for multiple Spotify users to create a list which has songs b
 - [x] Create web-interface for single user sign in
 - [x] Support multiple user log in / store auth keys
 - [x] Create playlist based on musical preferences
-- [ ] Process data for visualisation
+- [ ] Process data for visualisation (Mike)
 - [ ] **(bonus):** allow parameters for better recommendation (min. artist, min. numbers, 'danceability (?)', etc…) 
 - [x] **(bonus):** Host service on website
 ### Front-end
-- [ ] Design individual pages (or just yolo it)
+- [ ] Design individual pages (or just yolo it) 
 - [ ] Pages
 - - [ ] Landing page
 - - [ ] Invite page
