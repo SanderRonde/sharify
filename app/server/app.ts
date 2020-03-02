@@ -23,8 +23,7 @@ namespace App {
             })
         );
         app.use(bodyParser.text());
-        app.use(serveStatic(path.join(__dirname, '../', 'client/public')));
-        app.use(serveStatic(path.join(__dirname, '../', 'client/static')));
+        app.use(serveStatic(path.join(__dirname, '../', 'client/build')));
     }
 
     export function init() {
