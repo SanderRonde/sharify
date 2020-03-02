@@ -10,7 +10,7 @@ Matchmaking system for multiple Spotify users to create a list which has songs b
 
 ### Developing
 
-* Run `npm run frontend` in one terminal for the frontend and `npm run backend-dev` in another one for the backend
+* Run `npm run frontend` in one terminal for the frontend and `npm run backend-dev` in another one for the backend. Then in another one run `npm run backend-watch` to compile file changes in the backend when they change.
 * That's it, the server is available on port 3000 and will restart when you make any changes on either the frontend or the backend
 
 ## TODO
