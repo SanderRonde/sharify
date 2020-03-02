@@ -1,6 +1,5 @@
 import { Background, Content, Logo, Link } from "./styles";
 import React from "react";
-import "./styles.tsx";
 
 export default class Home extends React.Component {
 	render() {
