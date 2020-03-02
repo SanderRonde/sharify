@@ -36,7 +36,7 @@
 	},
 	"scripts": {
 		"compile": "tsc -p tsconfig.json",
-		"watch:server": "tsc -p tsconfig.json -w",
+		"watch": "tsc -p tsconfig.json -w",
 		"dev": "nodemon --dev",
 		"start": "nodemon"
 	}
