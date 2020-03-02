@@ -1,11 +1,11 @@
-import { SPOTIFY_HOST_SCOPES, REDIRECT_PATH, HOST_URL, SPOTIFY_PEER_SCOPES, SPOTIFY_COLOR } from './constants';
+import { SPOTIFY_HOST_SCOPES, REDIRECT_PATH, FRONTEND_URL, SPOTIFY_PEER_SCOPES, SPOTIFY_COLOR } from './constants';
 import { Spotify } from './spotify';
 import * as ws from 'express-ws';
 import * as QRCode from 'qrcode';
 import { Rooms } from './rooms';
 
 export function initRoutes(app: ws.Application) {
-    app.get('/new_room', async (_, res) => {
+    app.get('/api/new-room', async (_, res) => {
         const room = Rooms.create();
         const url = Spotify.Authentication.generatePermissionURL(
             SPOTIFY_HOST_SCOPES,
@@ -13,7 +13,7 @@ export function initRoutes(app: ws.Application) {
                 room: room.id,
                 host: true,
             })
-        );
+		);
         res.redirect(302, await url);
     });
     app.get(REDIRECT_PATH, async (req, res) => {
@@ -34,9 +34,9 @@ export function initRoutes(app: ws.Application) {
         await Rooms.addToRoom(state.room, await authData.json(), state.host);
 
         // Redirect to room
-        res.redirect(302, `${HOST_URL}/room/${state.room}`);
+        res.redirect(302, `${FRONTEND_URL}/room/${state.room}`);
 	});
-	app.get('/room/:id/join', async (req, res) => {
+	app.get('/api/room/:id/join', async (req, res) => {
 		const room = Rooms.get(req.params['id'], res);
 		if (!room) return;
 
@@ -63,7 +63,7 @@ export function initRoutes(app: ws.Application) {
         const memberData = room.members.map(( { info: { email, name } }) => {
             return `${name} (${email})`;
 		});
-		const inviteLink = `${HOST_URL}/room/${room.id}/join`;
+		const inviteLink = `${FRONTEND_URL}/room/${room.id}/join`;
 		const qrData = await QRCode.toString(inviteLink, {
 			color: {
 				dark: SPOTIFY_COLOR,

@@ -1,4 +1,4 @@
-import { SPOTIFY_SECRETS_FILE, HOST_URL, REDIRECT_PATH } from "./constants";
+import { SPOTIFY_SECRETS_FILE, FRONTEND_URL, REDIRECT_PATH } from "./constants";
 import { SpotifyEndpoints } from "./spotify-endpoints";
 import { SpotifyTypes } from "../types/spotify";
 import * as querystring from "querystring";
@@ -52,7 +52,7 @@ export namespace Spotify {
                 this._refresher = setTimeout(() => {
                     this.refreshToken();
                     this._refresher && clearTimeout(this._refresher);
-                }, expireTime * 1000 * 0.9);
+                }, expireTime * 1000 * 0.9) as unknown as NodeJS.Timeout;
             }
 
             private async _checkCreatedToken(
@@ -289,7 +289,7 @@ export namespace Spotify {
             }
         }
 
-        const REDIRECT_URI = `${HOST_URL}${REDIRECT_PATH}`;
+        const REDIRECT_URI = `${FRONTEND_URL}${REDIRECT_PATH}`;
         export async function generatePermissionURL(
             scopes: string[],
             state: string

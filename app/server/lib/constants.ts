@@ -17,7 +17,9 @@ export const SPOTIFY_SECRETS_FILE = path.join(
     __dirname,
     "../../../secrets/spotify.json"
 );
+export const FRONTEND_PORT = 3000;
 export const HOST_URL = IO.get().host || `http://localhost:${IO.get().port}`;
+export const FRONTEND_URL = IO.get().host || `http://localhost:${FRONTEND_PORT}`;
 export const REDIRECT_PATH = "/api/permission_callback";
 export const SPOTIFY_COLOR = "#1ed760";
 export const DEFAULT_TOP_LIMIT = 100;
