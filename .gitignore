@@ -129,3 +129,4 @@ yarn-error.log*
 app/client/build
 
 !app/client/src/react-app-env.d.ts
+app/client/design
