@@ -48,9 +48,11 @@ class Member extends React.Component<
             name += ' (me)';
         }
         return (
-            <Row>
-                <Spin spinning={this.state.deletingUser} delay={250}>
+            <Row style={{ width: '100%' }}>
+                <Spin wrapperClassName={"fullWidth"} spinning={this.state.deletingUser} delay={250} style={{ width: '100%' }}> 
+
                     <Card
+                        style={{ width: '100%' }}
                         actions={
                             !this.props.currentUserHost ||
                             this.props.member.isMe
