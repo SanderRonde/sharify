@@ -116,6 +116,7 @@ class Member extends React.Component<
                                         const image = this.props.member
                                             .image ? (
                                             <Avatar
+                                                alt="profile picture"
                                                 src={this.props.member.image}
                                             />
                                         ) : (
