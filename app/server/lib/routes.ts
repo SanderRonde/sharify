@@ -1,7 +1,6 @@
-import { SPOTIFY_HOST_SCOPES, REDIRECT_PATH, FRONTEND_URL, SPOTIFY_PEER_SCOPES, SPOTIFY_COLOR, ROOM_TIMEOUT } from './constants';
+import { SPOTIFY_HOST_SCOPES, REDIRECT_PATH, FRONTEND_URL, SPOTIFY_PEER_SCOPES, ROOM_TIMEOUT } from './constants';
 import { Spotify } from './spotify';
 import * as ws from 'express-ws';
-import * as QRCode from 'qrcode';
 import { Rooms } from './rooms';
 
 export function initRoutes(app: ws.Application) {
@@ -55,43 +54,43 @@ export function initRoutes(app: ws.Application) {
 		);
 		res.redirect(302, inviteLink);
 	});
-    app.get('/room/:id', async (req, res) => {
-        const room = Rooms.get(req.params['id'], res);
-		if (!room) return;
+    // app.get('/room/:id', async (req, res) => {
+    //     const room = Rooms.get(req.params['id'], res);
+	// 	if (!room) return;
 
-        // TODO: make this something fancy
-        res.status(200);
-        const hostInfo = (() => {
-            if (!room.host) return 'None';
-            const info = room.host.info;
-            return `${info.name} (${info.email})`;
-        })();
-        const memberData = room.members.map(( { info: { email, name } }) => {
-            return `${name} (${email})`;
-		});
-		const inviteLink = `${FRONTEND_URL}/room/${room.id}/join`;
-		const qrData = await QRCode.toString(inviteLink, {
-			color: {
-				dark: SPOTIFY_COLOR,
-				light: '#ffffff'
-			},
-			type: 'svg'
-		});
-        res.write(
-			`<html><head><title>Room ${room.id}</title></head><body>
-			Welcome to the room. <br>
-			Host is <div id="hostInfo">${hostInfo}</div><br> 
-			Current members are:<br><ul id="members"> ${memberData.map((data) => {
-				return `<li>${data}</li>`;
-			}).join('')}
-			</ul>
-			<a href="${inviteLink}" target="_blank">Invite link</a>
-			<svg>${qrData}</svg>
-			<script src="/room/room.js" type="module"></script>
-			</body></html>`
-        );
-        res.end();
-	});
+    //     // TODO: make this something fancy
+    //     res.status(200);
+    //     const hostInfo = (() => {
+    //         if (!room.host) return 'None';
+    //         const info = room.host.info;
+    //         return `${info.name} (${info.email})`;
+    //     })();
+    //     const memberData = room.members.map(( { info: { email, name } }) => {
+    //         return `${name} (${email})`;
+	// 	});
+	// 	const inviteLink = `${FRONTEND_URL}/room/${room.id}/join`;
+	// 	const qrData = await QRCode.toString(inviteLink, {
+	// 		color: {
+	// 			dark: SPOTIFY_COLOR,
+	// 			light: '#ffffff'
+	// 		},
+	// 		type: 'svg'
+	// 	});
+    //     res.write(
+	// 		`<html><head><title>Room ${room.id}</title></head><body>
+	// 		Welcome to the room. <br>
+	// 		Host is <div id="hostInfo">${hostInfo}</div><br> 
+	// 		Current members are:<br><ul id="members"> ${memberData.map((data) => {
+	// 			return `<li>${data}</li>`;
+	// 		}).join('')}
+	// 		</ul>
+	// 		<a href="${inviteLink}" target="_blank">Invite link</a>
+	// 		<svg>${qrData}</svg>
+	// 		<script src="/room/room.js" type="module"></script>
+	// 		</body></html>`
+    //     );
+    //     res.end();
+	// });
 	app.ws('/room/:id', (ws, req) => {
 		const id = req.params['id'];
 		const room = Rooms.get(id);
