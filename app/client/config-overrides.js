@@ -1,5 +1,6 @@
 const { override, fixBabelImports, addLessLoader  } = require('customize-cra');
-const darkTheme = require('@ant-design/dark-theme')
+const darkTheme = require('@ant-design/dark-theme');
+const theme = require('./src/theme-override.json');
 
 module.exports = override(
 	fixBabelImports('import', {
@@ -9,6 +10,6 @@ module.exports = override(
 	}),
 	addLessLoader({
 		javascriptEnabled: true,
-		modifyVars: {... darkTheme.default, '@primary-color': '#1ed760' }
+		modifyVars: {... darkTheme.default, '@primary-color': theme["primary-color"] }
 	})
 );
