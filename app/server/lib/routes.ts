@@ -1,4 +1,4 @@
-import { SPOTIFY_HOST_SCOPES, REDIRECT_PATH, FRONTEND_URL, SPOTIFY_PEER_SCOPES, SPOTIFY_COLOR } from './constants';
+import { SPOTIFY_HOST_SCOPES, REDIRECT_PATH, FRONTEND_URL, SPOTIFY_PEER_SCOPES, SPOTIFY_COLOR, ROOM_TIMEOUT } from './constants';
 import { Spotify } from './spotify';
 import * as ws from 'express-ws';
 import * as QRCode from 'qrcode';
@@ -31,8 +31,14 @@ export function initRoutes(app: ws.Application) {
         };
 
         // Add to room (if possible)
-        await Rooms.addToRoom(state.room, await authData.json(), state.host);
-
+		const self = await Rooms.addToRoom(state.room, await authData.json(), state.host);
+		if (self) {
+			res.cookie(`${state.room}`, Buffer.from(self.internalID).toString('base64'), {
+				signed: true,
+				expires: new Date(Date.now() + ROOM_TIMEOUT)
+			});
+		}
+		
         // Redirect to room
         res.redirect(302, `${FRONTEND_URL}/room/${state.room}`);
 	});

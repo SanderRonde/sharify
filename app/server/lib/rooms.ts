@@ -1,4 +1,7 @@
-import { Recommendations, SpotifyRecommendations } from './spotify-recommendations';
+import {
+    Recommendations,
+    SpotifyRecommendations,
+} from './spotify-recommendations';
 import { ROOM_ID_LENGTH, ROOM_TIMEOUT } from './constants';
 import { WebsocketMessages } from '../../shared/ws';
 import { SpotifyTypes } from '../types/spotify';
@@ -7,6 +10,7 @@ import * as express from 'express';
 import { Util } from './util';
 
 const roomMap: Map<string, Room> = new Map();
+const memberIDMap: Map<string, RoomMember> = new Map();
 
 export interface UserInfo {
     name: string;
@@ -16,17 +20,25 @@ export interface UserInfo {
 
 export class RoomMember {
     public api!: Spotify.API.APIInstance;
+    public readonly internalID = (() => {
+        const id = Util.randomString(32);
+        memberIDMap.set(id, this);
+        return id;
+    })();
 
-    constructor(private _auth: SpotifyTypes.Endpoints.AuthToken) {}
+    constructor(
+        public room: Room,
+        private _auth: SpotifyTypes.Endpoints.AuthToken
+    ) {}
 
     async init() {
-		this.api = new Spotify.API.APIInstance({
+        this.api = new Spotify.API.APIInstance({
             accessToken: this._auth.access_token,
             expiresIn: this._auth.expires_in,
-            refreshToken: this._auth.refresh_token
+            refreshToken: this._auth.refresh_token,
         });
-		this._info = await this._getSpotifyInfo();
-		this.api.setID(this.info.id);
+        this._info = await this._getSpotifyInfo();
+        this.api.setID(this.info.id);
         return this;
     }
 
@@ -57,6 +69,10 @@ export class RoomMember {
             email: this.info.email,
         };
     }
+
+    public destroy() {
+        memberIDMap.delete(this.internalID);
+    }
 }
 
 type RoomListener = (message: WebsocketMessages) => void;
@@ -65,7 +81,9 @@ export class Room {
     public id: string;
     public members: RoomMember[] = [];
     public host: RoomMember | null = null;
-    public recommendations: Recommendations = SpotifyRecommendations.create(this);
+    public recommendations: Recommendations = SpotifyRecommendations.create(
+        this
+    );
 
     private _listeners: Map<any, RoomListener> = new Map();
 
@@ -85,6 +103,7 @@ export class Room {
 
     public destroy() {
         roomMap.delete(this.id);
+        this.members.forEach((member) => member.destroy());
     }
 
     private async _filterUniqueUsers() {
@@ -118,7 +137,7 @@ export class Room {
         authData: SpotifyTypes.Endpoints.AuthToken,
         isHost: boolean
     ) {
-        const member = await new RoomMember(authData).init();
+        const member = await new RoomMember(this, authData).init();
         this.members.push(member);
         if (isHost) {
             this.host = member;
@@ -130,7 +149,7 @@ export class Room {
 
         // If the user was a duplicate and was filtered out,
         // don't notify others
-        if (this.members.indexOf(member) == -1) return;
+        if (this.members.indexOf(member) == -1) return null;
 
         this.notify({
             type: 'join',
@@ -144,11 +163,13 @@ export class Room {
                     };
                 })
             ),
-		});
-		
-		// Don't await this since it might take a while and should happen
-		// in the background
-		this.recommendations.addMember(member);
+        });
+
+        // Don't await this since it might take a while and should happen
+        // in the background
+        this.recommendations.addMember(member);
+
+        return member;
     }
 
     public subscribe(identifier: any, listener: RoomListener) {
@@ -184,7 +205,8 @@ export namespace Rooms {
     ) {
         const room = Rooms.get(roomID);
         if (room) {
-            await room.addMember(authData, isHost);
+            return await room.addMember(authData, isHost);
         }
+        return null;
     }
 }
