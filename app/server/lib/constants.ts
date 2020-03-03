@@ -13,9 +13,14 @@ export const SPOTIFY_HOST_SCOPES = [
     "playlist-modify-public",
     "playlist-modify-private",
 ];
-export const SPOTIFY_SECRETS_FILE = path.join(
+export const SECRET_DIR = path.join(
     __dirname,
-    "../../../secrets/spotify.json"
+    "../../../secrets");
+export const SPOTIFY_SECRETS_FILE = path.join(
+    SECRET_DIR, "spotify.json"
+);
+export const COOKIE_SECRETS_FILE = path.join(
+    SECRET_DIR, "cookie.js"
 );
 export const FRONTEND_PORT = 3000;
 export const HOST_URL = IO.get().host || `http://localhost:${IO.get().port}`;
