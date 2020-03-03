@@ -19,11 +19,11 @@ export default function Content({
                 gutter={[16, 16] as [Gutter, Gutter]}
 				style={{ flexGrow: 100 }}
             >
-                <Col md={18} xs={24}>
+                <Col md={16} xs={24}>
 
                     <Playlist id={playlistID} />
                 </Col>
-                <Col md={6} xs={24}>
+                <Col md={8} xs={24}>
                     <MemberList members={members} />
                 </Col>
             </Row>
