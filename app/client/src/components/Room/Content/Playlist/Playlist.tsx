@@ -20,7 +20,7 @@ export default function Playlist({ id }: { id: string | null }) {
                 <iframe
                     title="spotify-playlist"
                     src={`https://open.spotify.com/embed/playlist/${id}`}
-                    style={{ minHeight: '70vh', width: '100%' }}
+                    style={{ minHeight: '70vh', width: '100%', marginTop: '1px' }}
                     frameBorder="0"
                     //@ts-ignore
                     allowtransparency="true"
