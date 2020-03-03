@@ -5,12 +5,15 @@ Matchmaking system for multiple Spotify users to create a list which has songs b
 
 * Install [nodejs](https://nodejs.org/en/) or better yet [yarn](https://yarnpkg.com/)
 * Run `npm install` when using `nodejs` or `yarn` when using `yarn`
-* For production mode run `npm run frontend-build` andd then `npm run backend`
+* For production mode run `npm run prod`
 * It should now be running on port 1234 by default
 
 ### Developing
 
-* Run `npm run frontend` in one terminal for the frontend (yes it's very slow to start) and `npm run backend-dev` in another one for the backend. Then in another one run `npm run backend-watch` to compile file changes in the backend when they change.
+* Either run `npm run dev` to run it all in one terminal or:
+	* Run `npm run frontend` in one terminal for the frontend (yes it's very slow to start).
+	* Run `npm run backend-dev` in another one for the backend. 
+	* Run `npm run backend-watch` to compile files in the backend when they change.
 * That's it, the server is available on port 3000 and will restart when you make any changes on either the frontend or the backend
 
 ## TODO

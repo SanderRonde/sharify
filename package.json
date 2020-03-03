@@ -13,6 +13,7 @@
 		]
 	},
 	"scripts": {
+		"backend-watch-no-clear": "cd app/server && npm run watch",
 		"backend-install": "cd app/server && (yarn install || npm install)",
 		"backend-compile": "cd app/server && npm run compile",
 		"backend-watch": "cd app/server && npm run watch",
@@ -22,9 +23,12 @@
 		"frontend-build": "cd app/client && npm run build",
 		"frontend-test": "cd app/client && npm run test",
 		"frontend": "cd app/client && npm run start",
-		"install": "npm run backend-install && npm run frontend-install"
+		"install": "npm run backend-install && npm run frontend-install",
+		"dev": "concurrently \"npm:backend-dev\" \"npm:frontend\" \"npm:backend-watch-no-clear\"",
+		"prod": "npm run frontend-build && npm run backend"
 	},
 	"devDependencies": {
+		"concurrently": "^5.1.0",
 		"nodemon": "^2.0.2",
 		"typescript": "^3.8.3"
 	},

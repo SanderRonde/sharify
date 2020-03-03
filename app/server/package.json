@@ -37,6 +37,7 @@
 	"scripts": {
 		"compile": "tsc -p tsconfig.json",
 		"watch": "tsc -p tsconfig.json -w",
+		"watch-no-clear": "tsc -p tsconfig.json -w --preserveWatchOutput",
 		"dev": "nodemon --dev",
 		"start": "nodemon"
 	}
