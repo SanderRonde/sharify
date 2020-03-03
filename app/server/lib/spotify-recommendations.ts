@@ -227,7 +227,7 @@ export class Recommendations {
     constructor(private _room: Room) {}
 
     get api() {
-        return this._room.creator?.api;
+        return this._room.host?.api;
     }
 
     private _notifyChanges() {

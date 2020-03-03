@@ -80,8 +80,8 @@ type RoomListener = (message: WebsocketMessages) => void;
 export class Room {
     public id: string;
     public members: RoomMember[] = [];
-    public creator: RoomMember | null = null;
-    public hosts: RoomMember[] = [];
+    public host: RoomMember | null = null;
+    public admins: RoomMember[] = [];
     public recommendations: Recommendations = SpotifyRecommendations.create(
         this
     );
@@ -141,7 +141,7 @@ export class Room {
         const member = await new RoomMember(this, authData).init();
         this.members.push(member);
         if (isHost) {
-            this.hosts?.push(member);
+            this.admins?.push(member);
         }
 
         if (!Util.isDev()) {
@@ -160,7 +160,7 @@ export class Room {
                     const info = await member.toJSON();
                     return {
                         ...info,
-                        isHost: this.hosts.includes(member),
+                        isHost: this.admins.includes(member),
                     };
                 })
             ),
