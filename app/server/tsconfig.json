@@ -1,5 +1,6 @@
 {
     "compilerOptions": {
+        "lib": ["dom", "dom.iterable", "esnext"],
         "alwaysStrict": true,
         "forceConsistentCasingInFileNames": true,
         "module": "CommonJS",
@@ -20,13 +21,10 @@
         "strictBindCallApply": true,
         "declaration": true,
         "declarationMap": true,
-		"sourceMap": true,
-		"composite": true
-	},
+        "sourceMap": true,
+        "composite": true
+    },
     "compileOnSave": true,
     "allowJs": true,
-    "include": [
-        "./",
-        "../shared"
-    ]
+    "include": ["./", "../shared"]
 }
