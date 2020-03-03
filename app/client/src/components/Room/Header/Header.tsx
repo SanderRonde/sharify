@@ -1,8 +1,8 @@
-import { IconTune } from "../../shared/icons";
-import { Button, Tooltip } from "antd";
-import styled from "styled-components";
-import media from "styled-media-query";
-import React from "react";
+import TuneIcon from '../../shared/icons/Tune';
+import { Button, Tooltip } from 'antd';
+import styled from 'styled-components';
+import media from 'styled-media-query';
+import React from 'react';
 
 const HeaderContainer = styled.div`
     display: flex;
@@ -18,7 +18,7 @@ const Logo = styled.img`
 `;
 
 const Title = styled.div`
-    ${media.lessThan("small")`
+    ${media.lessThan('small')`
 		display: none;
 	`}
     display: inline-block;
@@ -44,21 +44,23 @@ export default class Header extends React.Component {
                     </Tooltip>
                 </VerticalCenter>
                 <VerticalCenter>
-                    <Title>{"Sharify"}</Title>
+                    <Title>{'Sharify'}</Title>
                 </VerticalCenter>
 
                 <VerticalCenter>
                     <Tooltip title="Settings">
                         <Button
                             style={{
-                                width: "calc(54px + 2.8vmin)",
-                                height: "calc(54px + 2.8vmin)",
-                                padding: "calc(7.8px + 0.5vmin)",
+                                width: 'calc(54px + 2.8vmin)',
+                                height: 'calc(54px + 2.8vmin)',
+                                padding: 'calc(7.8px + 0.5vmin)',
                             }}
                             size="large"
                             shape="circle-outline"
                             icon={
-                                <IconTune size='calc(37px + 1.4vmin)' fill={"white"} />
+                                <TuneIcon
+                                    style={{ fontSize: 'calc(37px + 1.4vmin)' }}
+                                />
                             }
                         />
                     </Tooltip>

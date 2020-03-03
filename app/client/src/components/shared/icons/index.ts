@@ -1,1 +1,1 @@
-export { default as IconTune } from './Tune';
+export { default as TuneIcon } from './Tune';
