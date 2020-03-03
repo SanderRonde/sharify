@@ -49,8 +49,12 @@ class Member extends React.Component<
         }
         return (
             <Row style={{ width: '100%' }}>
-                <Spin wrapperClassName={"fullWidth"} spinning={this.state.deletingUser} delay={250} style={{ width: '100%' }}> 
-
+                <Spin
+                    wrapperClassName={'fullWidth'}
+                    spinning={this.state.deletingUser}
+                    delay={250}
+                    style={{ width: '100%' }}
+                >
                     <Card
                         style={{ width: '100%' }}
                         actions={
@@ -106,36 +110,43 @@ class Member extends React.Component<
                         }
                     >
                         <Tooltip title={name}>
-                            <Meta
-                                avatar={(() => {
-                                    const image = this.props.member.image ? (
-                                        <Avatar src={this.props.member.image} />
-                                    ) : (
-                                        <UserOutlined
-                                            style={{ fontSize: '32px' }}
-                                        />
-                                    );
-                                    if (this.props.member.isHost) {
-                                        return (
-                                            <CrownedImage>{image}</CrownedImage>
+                            <div>
+                                <Meta
+                                    avatar={(() => {
+                                        const image = this.props.member
+                                            .image ? (
+                                            <Avatar
+                                                src={this.props.member.image}
+                                            />
+                                        ) : (
+                                            <UserOutlined
+                                                style={{ fontSize: '32px' }}
+                                            />
                                         );
+                                        if (this.props.member.isHost) {
+                                            return (
+                                                <CrownedImage>
+                                                    {image}
+                                                </CrownedImage>
+                                            );
+                                        }
+                                        return image;
+                                    })()}
+                                    title={
+                                        <span
+                                            style={{
+                                                textDecoration: this.props
+                                                    .member.isMe
+                                                    ? 'underline'
+                                                    : 'none',
+                                            }}
+                                        >
+                                            {name}
+                                        </span>
                                     }
-                                    return image;
-                                })()}
-                                title={
-                                    <span
-                                        style={{
-                                            textDecoration: this.props.member
-                                                .isMe
-                                                ? 'underline'
-                                                : 'none',
-                                        }}
-                                    >
-                                        {name}
-                                    </span>
-                                }
-                                description={this.props.member.email}
-                            />
+                                    description={this.props.member.email}
+                                />
+                            </div>
                         </Tooltip>
                     </Card>
                 </Spin>
