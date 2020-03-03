@@ -1,4 +1,4 @@
-import { SettingOutlined } from "@ant-design/icons";
+import { IconTune } from "../../shared/icons";
 import { Button, Tooltip } from "antd";
 import styled from "styled-components";
 import media from "styled-media-query";
@@ -53,12 +53,12 @@ export default class Header extends React.Component {
                             style={{
                                 width: "calc(54px + 2.8vmin)",
                                 height: "calc(54px + 2.8vmin)",
-                                padding: "calc(7.6px + 0.14vmin)",
+                                padding: "calc(7.8px + 0.5vmin)",
                             }}
                             size="large"
                             shape="circle-outline"
                             icon={
-                                <SettingOutlined style={{ fontSize: "calc(36px + 2.5vmin)" }} />
+                                <IconTune size='calc(37px + 1.4vmin)' fill={"white"} />
                             }
                         />
                     </Tooltip>
