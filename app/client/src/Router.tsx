@@ -1,6 +1,6 @@
 import { BrowserRouter as Router, Route } from 'react-router-dom';
+import RoomWrapper from './components/Room/Wrapper';
 import Home from './components/Home/Home';
-import Room from './components/Room/Room';
 import React from "react";
 
 export default class AppRouter extends React.Component {
@@ -11,7 +11,10 @@ export default class AppRouter extends React.Component {
 					<Home />
 				</Route>
 				<Route path="/room/:roomID">
-					<Room />
+					<RoomWrapper />
+				</Route>
+				<Route path="/404">
+					{/* TODO: */}
 				</Route>
 			</Router>
 		)

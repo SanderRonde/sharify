@@ -1,17 +1,46 @@
-import { Background } from '../shared/styles';
-import { useParams } from 'react-router-dom';
-import Header from './Header/Header';
-import { Content } from './styles';
+import { Background } from "../shared/styles";
+import Content from "./Content/Content";
+import Header from "./Header/Header";
+import { Page } from "./styles";
 import React from "react";
 
-export default function Room() {
-	const { roomID } = useParams();
-	console.log(roomID);
-	return (
-		<Background>
-			<Content>
-				<Header />
-			</Content>
-		</Background>
-	);
+const DEBUG = true;
+
+export interface RoomMember {}
+
+interface Props {
+    id: string;
 }
+
+class Room extends React.Component<
+    Props,
+    {
+        playlistID: string | null;
+        members: RoomMember[];
+    }
+> {
+    constructor(props: Props, context?: any) {
+        super(props, context);
+
+        this.state = {
+            playlistID: DEBUG ? '1lJr8Bej7l1x69s582H4wo' : null,
+            members: [],
+        };
+    }
+
+    render() {
+        return (
+            <Background>
+                <Page>
+                    <Header />
+                    <Content
+                        members={this.state.members}
+                        playlistID={this.state.playlistID}
+                    />
+                </Page>
+            </Background>
+        );
+    }
+}
+
+export default Room;

@@ -7,6 +7,13 @@ export const Background = styled.div`
 	justify-content: center;
 	font-size: calc(20px + 2vmin);
 	color: white;
-	height: 100vh;
+	min-height: 100vh;
 	width: 100vw;
+`;
+
+export const Verticalcenterer = styled.div`
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	height: 100%;
 `;
