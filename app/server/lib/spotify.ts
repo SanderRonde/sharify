@@ -309,7 +309,7 @@ export namespace Spotify {
         ) {
             const { error, code } = query;
             if (error) {
-                res.redirect('/?accepted=false');
+                res.redirect('/rejected');
                 return null;
             }
             if (!code) {

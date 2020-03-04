@@ -20,3 +20,16 @@ export const Link = styled.a`
 		text-decoration: underline;
 	}
 `;
+
+export const ErrorLogo = styled.a`
+	mask-image: url(logo512.png);
+    background-color: red;
+    mask-size: contain;
+	width: 60vmin;
+	height: 60vmin;
+`;
+
+export const ErrorMessage = styled.span`
+	color: #F44336;
+	font-weight: bold;
+`;
