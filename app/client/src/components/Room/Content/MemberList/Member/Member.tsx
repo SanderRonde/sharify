@@ -2,9 +2,9 @@ import { UserOutlined, DeleteOutlined, CrownOutlined } from '@ant-design/icons';
 import theme from '../../../../../theme-override.json';
 import { Row, Card, Avatar, Tooltip, Spin } from 'antd';
 import { RoomMember } from '../../../Room';
+import CrownedImage from './CrownedImage';
 import Meta from 'antd/lib/card/Meta';
 import React from 'react';
-import CrownedImage from './CrownedImage';
 
 class Member extends React.Component<
     {

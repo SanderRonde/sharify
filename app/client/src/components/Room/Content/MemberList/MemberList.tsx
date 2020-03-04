@@ -1,21 +1,33 @@
 import { Verticalcenterer } from '../../../shared/styles';
+import InviteModal from './InviteModal/InviteModal';
+import { PlusOutlined } from '@ant-design/icons';
+import { Spin, Card, Tooltip } from 'antd';
 import { RoomMember } from '../../Room';
 import Member from './Member/Member';
-import { Spin } from 'antd';
 import React from 'react';
 
-class MemberList extends React.Component<{
-    members: RoomMember[];
-}> {
+class MemberList extends React.Component<
+    {
+        members: RoomMember[];
+        roomID: string;
+    },
+    {
+        modalVisible: boolean;
+    }
+> {
+    state = {
+        modalVisible: false,
+    };
+
     setMemberAdmin(member: RoomMember, status: boolean) {
-		console.log('Set status', member, status);
-		// TODO:
-	}
+        console.log('Set status', member, status);
+        // TODO:
+    }
 
     deleteMember(member: RoomMember) {
-		console.log('Delete', member);
-		// TODO:
-	}
+        console.log('Delete', member);
+        // TODO:
+    }
 
     render() {
         if (this.props.members.length === 0) {
@@ -43,15 +55,39 @@ class MemberList extends React.Component<{
 
         return (
             <>
+                <InviteModal
+                    roomID={this.props.roomID}
+                    onHide={() =>
+                        this.setState({
+                            modalVisible: false,
+                        })
+                    }
+                    visible={this.state.modalVisible}
+                />
                 {sortedMembers.map((member) => (
                     <Member
-                        key={`${member.name}${member.email}`}
+                        key={member.id}
                         currentUserHost={currentUserHost}
-						member={member}
-						deleteMember={() => this.deleteMember(member)}
-						setMemberAdmin={(status: boolean) => this.setMemberAdmin(member, status)}
+                        member={member}
+                        deleteMember={() => this.deleteMember(member)}
+                        setMemberAdmin={(status: boolean) =>
+                            this.setMemberAdmin(member, status)
+                        }
                     />
                 ))}
+                <Tooltip title="Invite members">
+                    <Card
+                        hoverable
+                        style={{ textAlign: 'center' }}
+                        onClick={() =>
+                            this.setState({
+                                modalVisible: true,
+                            })
+                        }
+                    >
+                        <PlusOutlined style={{ fontSize: '30px' }} />
+                    </Card>
+                </Tooltip>
             </>
         );
     }

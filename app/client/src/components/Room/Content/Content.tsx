@@ -9,9 +9,11 @@ import React from "react";
 export default function Content({
     members,
     playlistID,
+    roomID
 }: {
     playlistID: string | null;
     members: RoomMember[];
+    roomID: string;
 }) {
     return (
         <Container>
@@ -25,7 +27,7 @@ export default function Content({
                 </Col>
                 <Col md={8} xs={24}>
                     <MemberListContainer>
-                        <MemberList members={members} />
+                        <MemberList roomID={roomID} members={members} />
                     </MemberListContainer>
                 </Col>
             </Row>

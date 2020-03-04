@@ -99,6 +99,7 @@ class Room extends React.Component<
                     <Header />
                     <Content
                         members={this.state.members}
+                        roomID={this.props.id}
                         playlistID={this.state.playlistID}
                     />
                 </Page>
