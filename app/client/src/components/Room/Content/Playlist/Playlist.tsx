@@ -27,8 +27,7 @@ export default function Playlist({ id }: { id: string | null }) {
                     src={`https://open.spotify.com/embed/playlist/${id}`}
                     style={{
                         minHeight: '70vh',
-                        width: '100%',
-                        marginTop: '15px',
+                        width: '100%'
                     }}
                     frameBorder="0"
                     //@ts-ignore

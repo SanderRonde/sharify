@@ -22,10 +22,9 @@ export default function Content({
 				style={{ flexGrow: 100 }}
             >
                 <Col md={16} xs={24}>
-
                     <Playlist id={playlistID} />
                 </Col>
-                <Col md={8} xs={24}>
+                <Col md={8} xs={24} style={{marginTop: '-9px'}}>
                     <MemberListContainer>
                         <MemberList roomID={roomID} members={members} />
                     </MemberListContainer>
