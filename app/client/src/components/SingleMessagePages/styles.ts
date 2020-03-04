@@ -23,7 +23,7 @@ export const Link = styled.a`
 
 export const ErrorLogo = styled.a`
 	mask-image: url(logo512.png);
-    background-color: red;
+    background-color: #ff2f1f;
     mask-size: contain;
 	width: 60vmin;
 	height: 60vmin;
