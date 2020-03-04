@@ -32,6 +32,7 @@ export const SPOTIFY_RECOMMENDATIONS_AMOUNT = 100;
 export const GENRE_TRACK_LIMIT = 20;
 export const ARTIST_TRACK_LIMIT = 10;
 export const TRACK_TRACK_LIMIT = 5;
+export const USER_ID_LENGTH = 32;
 export const SEEDABLES = [
     "acoustic",
     "afrobeat",
