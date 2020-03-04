@@ -70,6 +70,41 @@ export class RoomMember {
         return this._info!;
     }
 
+    public get isAdmin() {
+        return this.room.admins.has(this);
+    }
+
+    public get isHost() {
+        return this.room.host === this;
+    }
+
+    public setAdminStatus(isAdmin: boolean) {
+        if (isAdmin) {
+            this.room.admins.add(this);
+        } else {
+            this.room.admins.delete(this);
+        }
+
+        this.room.notifyUpdate({
+            members: true
+        });
+    }
+
+    public kick() {
+        const index = this.room.members.indexOf(this);
+        if (index === -1) return false;
+        this.room.members.slice(index, 1);
+
+        this.room.admins.delete(this);
+
+        this.room.banned.add(this.info.email);
+
+        this.room.notifyUpdate({
+            members: true
+        });
+        return true;
+    }
+
     public async toJSON() {
         return {
             name: this.info.name,
@@ -84,11 +119,12 @@ export class Room {
     public id: string;
     public members: RoomMember[] = [];
     public host: RoomMember | null = null;
-    public admins: RoomMember[] = [];
+    public admins: Set<RoomMember> = new Set();
     public recommendations: Recommendations = SpotifyRecommendations.create(
         this
     );
     public memberIDMap: Map<string, RoomMember> = new Map();
+    public banned: Set<string> = new Set();
 
     private _listeners: Map<
         any,
@@ -158,10 +194,12 @@ export class Room {
         isHost: boolean
     ) {
         const member = await new RoomMember(this, authData).init();
+        if (this.banned.has(member.info.email)) return null;
+
         this.members.push(member);
         if (isHost) {
             this.host = member;
-            this.admins?.push(member);
+            this.admins.add(member);
         }
 
         if (!Util.isDev()) {
@@ -206,7 +244,7 @@ export class Room {
                 return {
                     id: member.internalID,
                     isHost: this.host === member,
-                    isAdmin: this.admins.includes(member),
+                    isAdmin: this.admins.has(member),
                     isMe: callingMember === member,
                     name: member.info.name,
                     email: member.info.email,
@@ -241,6 +279,13 @@ export namespace Rooms {
         return room || null;
     }
 
+    export function getMemberById(room: Room, id: string) {
+        if (!room.memberIDMap.has(id)) return null;
+
+        const member = room.memberIDMap.get(id)!;
+        return member;
+    }
+
     export function getActiveMember(room: Room, req: express.Request) {
         if (!(room.id in req.signedCookies)) {
             return null;
@@ -254,7 +299,8 @@ export namespace Rooms {
         const secretID = userIDs.slice(USER_ID_LENGTH);
         if (!room.memberIDMap.has(publicID)) return null;
 
-        const member = room.memberIDMap.get(publicID)!;
+        const member = getMemberById(room, publicID);
+        if (!member) return null;
         if (member.secretID === secretID) return member;
 
         return null;

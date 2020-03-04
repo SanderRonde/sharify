@@ -2,7 +2,7 @@ import { Verticalcenterer } from '../../../shared/styles';
 import { RoomMember } from "../../../../../../shared/ws";
 import InviteModal from './InviteModal/InviteModal';
 import { PlusOutlined } from '@ant-design/icons';
-import { Spin, Card, Tooltip } from 'antd';
+import { Spin, Card, Tooltip, notification } from 'antd';
 import Member from './Member/Member';
 import React from 'react';
 
@@ -19,14 +19,77 @@ class MemberList extends React.Component<
         modalVisible: false,
     };
 
-    setMemberAdmin(member: RoomMember, status: boolean) {
-        console.log('Set status', member, status);
-        // TODO:
+    async setMemberAdmin(member: RoomMember, status: boolean) {
+        try {
+            const result = await fetch('/api/user/admin', {
+                method: 'post',
+                body: JSON.stringify({
+                    room: this.props.roomID,
+                    userID: member.id,
+                    status: status
+                }),
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                credentials: 'include'
+            });
+            const { success, error } = (await result.json()) as {
+                success: boolean;
+                error?: string;
+            }
+            if (success) {
+                notification.open({
+                    message: 'Success',
+                    description: status ? 'Promoted to admin' : 'Removed admin status'
+                });
+            } else {
+                notification.open({
+                    message: 'Error',
+                    description: error!
+                });
+            }
+        } catch(e) {
+            notification.open({
+                message: 'Request failed',
+                description: 'Failed to send request'
+            });
+        }
     }
 
-    deleteMember(member: RoomMember) {
-        console.log('Delete', member);
-        // TODO:
+    async deleteMember(member: RoomMember) {
+        try {
+            const result = await fetch('/api/user/kick', {
+                method: 'post',
+                body: JSON.stringify({
+                    room: this.props.roomID,
+                    userID: member.id
+                }),
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                credentials: 'include'
+            });
+            const { success, error } = (await result.json()) as {
+                success: boolean;
+                error?: string;
+            }
+            if (success) {
+                notification.open({
+                    message: 'Success',
+                    description: 'Kicked user from room'
+                });
+            } else {
+                notification.open({
+                    message: 'Error',
+                    description: error!
+                });
+            }
+        } catch(e) {
+            notification.open({
+                message: 'Request failed',
+                description: 'Failed to send request'
+            });
+        }
     }
 
     render() {

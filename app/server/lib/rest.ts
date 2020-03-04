@@ -1,5 +1,5 @@
 import * as express from 'express';
-import { Rooms } from './rooms';
+import { Rooms, RoomMember, Room } from './rooms';
 import { Spotify } from './spotify';
 import {
     SPOTIFY_HOST_SCOPES,
@@ -76,5 +76,117 @@ export namespace Rest {
             })
         );
         res.redirect(302, inviteLink);
+    }
+
+    function getRoomFromPost(req: express.Request, res: express.Response) {
+        const roomID = req.body['room'];
+        const room = Rooms.get(roomID);
+        const activeMember = room ? Rooms.getActiveMember(room, req) : null;
+
+        if (!room || !activeMember) {
+            res.status(404);
+            res.send({
+                success: false,
+                error: 'No room found',
+            });
+            return null;
+        }
+
+        return { room, activeMember };
+    }
+
+    function assertIsHost(member: RoomMember, res: express.Response) {
+        if (!member.isHost) {
+            res.status(401);
+            res.send({
+                success: false,
+                error: 'Not allowed',
+            });
+            return null;
+        }
+
+        return true;
+    }
+
+    function getTargetFromPost(req: express.Request, res: express.Response, room: Room) {
+        const targetUserID = req.body['userID'];
+        const targetUser = targetUserID
+            ? Rooms.getMemberById(room, targetUserID)
+            : null;
+
+        if (!targetUserID || !targetUser) {
+            res.status(404);
+            res.send({
+                success: false,
+                error: 'User not found',
+            });
+            return null;
+        }
+
+        return targetUser;
+    }
+
+    /**
+     * Params:
+     * 
+     * {string} room - The ID of the room this is about
+     * {string} userID - The ID of the target
+     * {boolean} status - The target admin status of the user
+     */
+    export async function setAdminStatus(
+        req: express.Request,
+        res: express.Response
+    ) {
+        const result = getRoomFromPost(req, res);
+        if (!result) return;
+
+        const { activeMember, room } = result;
+        if (!assertIsHost(activeMember, res)) return;
+
+        const targetUser = getTargetFromPost(req, res, room);
+        if (!targetUser) return;
+
+        const targetValue = req.body['status'];
+        if (typeof targetValue !== 'boolean') {
+            res.status(400);
+            res.send({
+                success: false,
+                error: 'Invalid value for status',
+            });
+            return;
+        }
+
+        targetUser.setAdminStatus(targetValue);
+        res.status(200);
+        res.send({
+            success: true,
+        });
+    }
+
+    /**
+     * Params:
+     * 
+     * {string} room - The ID of the room this is about
+     * {string} userID - The ID of the target
+     */
+    export async function kickUser(
+        req: express.Request,
+        res: express.Response
+    ) {
+        const result = getRoomFromPost(req, res);
+        if (!result) return;
+
+        const { activeMember, room } = result;
+        if (!assertIsHost(activeMember, res)) return;
+
+        const targetUser = getTargetFromPost(req, res, room);
+        if (!targetUser) return;
+
+        const kicked = targetUser.kick();
+        res.status(200);
+        res.send({
+            success: true,
+            kicked: kicked
+        });
     }
 }

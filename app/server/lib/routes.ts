@@ -13,6 +13,12 @@ export function initRoutes(app: ws.Application) {
     });
     app.get('/api/room/:id/join', async (req, res) => {
         await API.Rest.joinRoom(req, res);
+	});
+	app.post('/api/user/admin', async (req, res) => {
+        await API.Rest.setAdminStatus(req, res);
+	});
+	app.post('/api/user/kick', async (req, res) => {
+        await API.Rest.setAdminStatus(req, res);
     });
     app.ws('/ws/room/:id', (ws, req) => {
         API.WS.subscribe(ws, req);
