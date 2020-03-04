@@ -13,19 +13,26 @@ export const SPOTIFY_HOST_SCOPES = [
     "playlist-modify-public",
     "playlist-modify-private",
 ];
-export const SPOTIFY_SECRETS_FILE = path.join(
+export const SECRET_DIR = path.join(
     __dirname,
-    "../../../secrets/spotify.json"
+    "../../../secrets");
+export const SPOTIFY_SECRETS_FILE = path.join(
+    SECRET_DIR, "spotify.json"
 );
+export const COOKIE_SECRETS_FILE = path.join(
+    SECRET_DIR, "cookie.js"
+);
+export const FRONTEND_PORT = 3000;
 export const HOST_URL = IO.get().host || `http://localhost:${IO.get().port}`;
+export const FRONTEND_URL = IO.get().host || `http://localhost:${FRONTEND_PORT}`;
 export const REDIRECT_PATH = "/api/permission_callback";
-export const SPOTIFY_COLOR = "#1ed760";
 export const DEFAULT_TOP_LIMIT = 100;
 export const DEFAULT_TOP_TIME_RANGE = "medium_term";
 export const SPOTIFY_RECOMMENDATIONS_AMOUNT = 100;
 export const GENRE_TRACK_LIMIT = 20;
 export const ARTIST_TRACK_LIMIT = 10;
 export const TRACK_TRACK_LIMIT = 5;
+export const USER_ID_LENGTH = 32;
 export const SEEDABLES = [
     "acoustic",
     "afrobeat",

@@ -1,32 +1,38 @@
 {
-    "compilerOptions": {
-        "alwaysStrict": true,
-        "forceConsistentCasingInFileNames": true,
-        "module": "ESNext",
-        "moduleResolution": "node",
-        "noImplicitAny": true,
-        "noImplicitThis": true,
-        "preserveConstEnums": false,
-        "listFiles": false,
-        "pretty": true,
-        "noFallthroughCasesInSwitch": true,
-        "noImplicitReturns": true,
-        "noUnusedLocals": true,
-        "target": "es6",
-        "noUnusedParameters": true,
-        "experimentalDecorators": true,
-        "strictPropertyInitialization": true,
-        "strictNullChecks": true,
-        "strictBindCallApply": true,
-        "declaration": true,
-        "declarationMap": true,
-		"sourceMap": true,
-		"composite": true
-	},
-    "compileOnSave": true,
+  "compilerOptions": {
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
+    "noImplicitAny": true,
+    "noImplicitThis": true,
+    "preserveConstEnums": false,
+    "listFiles": false,
+    "pretty": true,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitReturns": true,
+    "noUnusedLocals": true,
+    "target": "es6",
+    "moduleResolution": "node",
+    "noUnusedParameters": true,
+    "experimentalDecorators": true,
+    "strictPropertyInitialization": true,
+    "strictNullChecks": true,
+    "strictBindCallApply": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "allowSyntheticDefaultImports": true,
+    "noEmit": true,
+    "jsx": "react",
     "allowJs": true,
-    "include": [
-        "./",
-        "../shared"
-    ]
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "module": "esnext"
+  },
+  "include": [
+    "src"
+  ]
 }
