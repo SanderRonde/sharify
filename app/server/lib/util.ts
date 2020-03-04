@@ -33,4 +33,12 @@ export namespace Util {
 			console.log(...args);
 		}
 	}
+
+	export function pick<O, K extends keyof O>(obj: O, keys: K[]): Pick<O, K> {
+		const picked: Partial<Pick<O, K>> = {};
+		for (const key of keys) {
+			picked[key] = obj[key];
+		}
+		return picked as Pick<O, K>;
+	}
 }
