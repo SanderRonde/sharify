@@ -141,6 +141,7 @@ export class Room {
         const member = await new RoomMember(this, authData).init();
         this.members.push(member);
         if (isHost) {
+            this.host = member;
             this.admins?.push(member);
         }
 
