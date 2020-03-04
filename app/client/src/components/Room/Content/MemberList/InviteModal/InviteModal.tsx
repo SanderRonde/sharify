@@ -25,25 +25,23 @@ class InviteModal extends React.Component<
     }
 
     copyToClipboard() {
-        console.log(
-            copy(this.url, {
-                onCopy: () => {
-                    notification.open({
-                        message: 'Copied!',
-                        description: 'Copied to clipboard',
-                    });
+        copy(this.url, {
+            onCopy: () => {
+                notification.open({
+                    message: 'Copied!',
+                    description: 'Copied to clipboard',
+                });
+                this.setState({
+                    copied: true,
+                });
+                debounce('InviteModalCopyToClipboard', 4500, () => {
                     this.setState({
-                        copied: true,
+                        copied: false,
                     });
-                    debounce('InviteModalCopyToClipboard', 4500, () => {
-                        this.setState({
-                            copied: false,
-                        });
-                    });
-                },
-                format: 'text/plain',
-            })
-        );
+                });
+            },
+            format: 'text/plain',
+        });
     }
 
     get canShare() {
