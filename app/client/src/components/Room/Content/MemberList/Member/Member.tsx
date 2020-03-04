@@ -1,7 +1,7 @@
 import { UserOutlined, DeleteOutlined, CrownOutlined } from '@ant-design/icons';
 import theme from '../../../../../theme-override.json';
 import { Row, Card, Avatar, Tooltip, Spin } from 'antd';
-import { RoomMember } from '../../../Room';
+import { RoomMember } from "../../../../../../../shared/ws";
 import CrownedImage from './CrownedImage';
 import Meta from 'antd/lib/card/Meta';
 import React from 'react';

@@ -231,10 +231,8 @@ export class Recommendations {
     }
 
     private _notifyChanges() {
-        this._room.notify({
-            type: "playlistupdate",
-            success: true,
-            playlistID: this.playlist?.id || null,
+        this._room.notifyUpdate({
+            playlistID: true
         });
     }
 

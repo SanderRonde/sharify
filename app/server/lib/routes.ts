@@ -1,4 +1,11 @@
-import { SPOTIFY_HOST_SCOPES, REDIRECT_PATH, FRONTEND_URL, SPOTIFY_PEER_SCOPES, ROOM_TIMEOUT } from './constants';
+import {
+	SPOTIFY_HOST_SCOPES,
+    REDIRECT_PATH,
+    FRONTEND_URL,
+    SPOTIFY_PEER_SCOPES,
+    ROOM_TIMEOUT,
+} from './constants';
+import { WebsocketMessage } from '../../shared/ws';
 import { Spotify } from './spotify';
 import * as ws from 'express-ws';
 import { Rooms } from './rooms';
@@ -12,7 +19,7 @@ export function initRoutes(app: ws.Application) {
                 room: room.id,
                 host: true,
             })
-		);
+        );
         res.redirect(302, await url);
     });
     app.get(REDIRECT_PATH, async (req, res) => {
@@ -30,85 +37,68 @@ export function initRoutes(app: ws.Application) {
         };
 
         // Add to room (if possible)
-		const self = await Rooms.addToRoom(state.room, await authData.json(), state.host);
-		if (self) {
-			res.cookie(`${state.room}`, Buffer.from(self.internalID).toString('base64'), {
-				signed: true,
-				expires: new Date(Date.now() + ROOM_TIMEOUT)
-			});
-		}
-		
+        const self = await Rooms.addToRoom(
+            state.room,
+            await authData.json(),
+            state.host
+        );
+        if (self) {
+            res.cookie(
+                `${state.room}`,
+                Buffer.from(self.internalID + self.secretID).toString('base64'),
+                {
+                    signed: true,
+                    expires: new Date(Date.now() + ROOM_TIMEOUT),
+                }
+            );
+        }
+
         // Redirect to room
         res.redirect(302, `${FRONTEND_URL}/room/${state.room}`);
-	});
-	app.get('/api/room/:id/join', async (req, res) => {
-		const room = Rooms.get(req.params['id'], res);
-		if (!room) return;
+    });
+    app.get('/api/room/:id/join', async (req, res) => {
+        const room = Rooms.get(req.params['id'], res);
+        if (!room) return;
 
-		const inviteLink = await Spotify.Authentication.generatePermissionURL(
+        const inviteLink = await Spotify.Authentication.generatePermissionURL(
             SPOTIFY_PEER_SCOPES,
             JSON.stringify({
                 room: room.id,
                 host: false,
             })
-		);
-		res.redirect(302, inviteLink);
-	});
-    // app.get('/room/:id', async (req, res) => {
-    //     const room = Rooms.get(req.params['id'], res);
-	// 	if (!room) return;
+        );
+        res.redirect(302, inviteLink);
+    });
+    app.ws('/ws/room/:id', (ws, req) => {
+        const id = req.params['id'];
+        const room = Rooms.get(id);
+        const activeMember = room ? Rooms.getActiveMember(room, req) : null;
 
-    //     // TODO: make this something fancy
-    //     res.status(200);
-    //     const hostInfo = (() => {
-    //         if (!room.host) return 'None';
-    //         const info = room.host.info;
-    //         return `${info.name} (${info.email})`;
-    //     })();
-    //     const memberData = room.members.map(( { info: { email, name } }) => {
-    //         return `${name} (${email})`;
-	// 	});
-	// 	const inviteLink = `${FRONTEND_URL}/room/${room.id}/join`;
-	// 	const qrData = await QRCode.toString(inviteLink, {
-	// 		color: {
-	// 			dark: SPOTIFY_COLOR,
-	// 			light: '#ffffff'
-	// 		},
-	// 		type: 'svg'
-	// 	});
-    //     res.write(
-	// 		`<html><head><title>Room ${room.id}</title></head><body>
-	// 		Welcome to the room. <br>
-	// 		Host is <div id="hostInfo">${hostInfo}</div><br> 
-	// 		Current members are:<br><ul id="members"> ${memberData.map((data) => {
-	// 			return `<li>${data}</li>`;
-	// 		}).join('')}
-	// 		</ul>
-	// 		<a href="${inviteLink}" target="_blank">Invite link</a>
-	// 		<svg>${qrData}</svg>
-	// 		<script src="/room/room.js" type="module"></script>
-	// 		</body></html>`
-    //     );
-    //     res.end();
-	// });
-	app.ws('/room/:id', (ws, req) => {
-		const id = req.params['id'];
-		const room = Rooms.get(id);
-		
-		if (!room) {
-			ws.send({
-				type: 'connect',
-				success: false,
-				error: 'No room found'
-			});
-			return;
-		}
+        if (!room || !activeMember) {
+            ws.send(
+                JSON.stringify({
+                    type: 'connect',
+                    success: false,
+                    error: 'No room found',
+                })
+            );
+            return;
+        }
 
-		ws.onclose = () => {
-			room.unsubscribe(ws);
-		}
-		room.subscribe(ws, (message) => {
-			ws.send(JSON.stringify(message));
+        ws.onclose = () => {
+            room.unsubscribe(ws);
+        };
+        room.subscribe(ws, activeMember, (message) => {
+            ws.send(JSON.stringify(message));
 		});
-	});
+		const msg = {
+			type: 'update',
+			success: true,
+			...room.getUpdateData(activeMember),
+		} as WebsocketMessage;
+		console.log(msg);
+        ws.send(
+            JSON.stringify(msg)
+        );
+    });
 }

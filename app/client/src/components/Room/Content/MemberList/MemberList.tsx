@@ -1,8 +1,8 @@
 import { Verticalcenterer } from '../../../shared/styles';
+import { RoomMember } from "../../../../../../shared/ws";
 import InviteModal from './InviteModal/InviteModal';
 import { PlusOutlined } from '@ant-design/icons';
 import { Spin, Card, Tooltip } from 'antd';
-import { RoomMember } from '../../Room';
 import Member from './Member/Member';
 import React from 'react';
 

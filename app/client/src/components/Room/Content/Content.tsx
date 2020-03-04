@@ -1,8 +1,8 @@
 import { Container, MemberListContainer } from "./styles";
+import { RoomMember } from "../../../../../shared/ws";
 import MemberList from "./MemberList/MemberList";
 import Playlist from "./Playlist/Playlist";
 import { Gutter } from "antd/lib/grid/row";
-import { RoomMember } from "../Room";
 import { Col, Row } from "antd";
 import React from "react";
 
