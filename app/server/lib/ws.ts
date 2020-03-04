@@ -31,7 +31,6 @@ export namespace WS {
             success: true,
             ...room.getUpdateData(activeMember),
         } as WebsocketMessage;
-        console.log(msg);
         ws.send(JSON.stringify(msg));
     }
 }
