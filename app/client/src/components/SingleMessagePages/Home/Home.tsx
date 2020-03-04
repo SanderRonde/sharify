@@ -6,7 +6,7 @@ const Home = () => {
     return (
         <Background>
             <Content>
-                <Logo src="logo512.png" alt="logo" />
+                <Logo src="/logo512.png" alt="logo" />
                 <Link href="/api/new-room" title="Create a room">
                     Create a room
                 </Link>
