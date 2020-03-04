@@ -16,4 +16,5 @@ export const Verticalcenterer = styled.div`
 	flex-direction: column;
 	justify-content: center;
 	height: 100%;
+	max-height: 70vh;
 `;

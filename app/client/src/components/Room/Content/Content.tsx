@@ -1,9 +1,9 @@
+import { Container, MemberListContainer } from "./styles";
 import MemberList from "./MemberList/MemberList";
 import Playlist from "./Playlist/Playlist";
 import { Gutter } from "antd/lib/grid/row";
-import { Container } from "./styles";
-import { Col, Row } from "antd";
 import { RoomMember } from "../Room";
+import { Col, Row } from "antd";
 import React from "react";
 
 export default function Content({
@@ -24,7 +24,9 @@ export default function Content({
                     <Playlist id={playlistID} />
                 </Col>
                 <Col md={8} xs={24}>
-                    <MemberList members={members} />
+                    <MemberListContainer>
+                        <MemberList members={members} />
+                    </MemberListContainer>
                 </Col>
             </Row>
         </Container>
