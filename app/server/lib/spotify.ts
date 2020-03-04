@@ -309,19 +309,11 @@ export namespace Spotify {
         ) {
             const { error, code } = query;
             if (error) {
-                // They didn't accept
-                res.status(200);
-                // TODO:
-                res.write("Accepteer pls");
-                res.end();
+                res.redirect('/?accepted=false');
                 return null;
             }
             if (!code) {
-                // Nothing passed at all
-                res.status(400);
-                // TODO:
-                res.write("Invalid request");
-                res.end();
+                res.redirect('/500');
                 return null;
             }
 
@@ -340,9 +332,7 @@ export namespace Spotify {
                 }
             )) as ExtendedResponse<SpotifyTypes.Endpoints.AuthToken>;
             if (!response) {
-                res.status(400);
-                res.write("Failed to authenticate");
-                res.end();
+                res.redirect('/500');
                 return null;
             }
             return response;

@@ -41,9 +41,13 @@ export namespace Rest {
         // Add to room (if possible)
         const self = await Rooms.addToRoom(
             state.room,
+            res,
             await authData.json(),
             state.host
         );
+
+        // Redirected already, return
+        if (!self) return;
 
         // If they're now in the room, set cookie
         if (self) {
@@ -65,7 +69,7 @@ export namespace Rest {
         req: express.Request,
         res: express.Response
     ) {
-        const room = Rooms.get(req.params['id'], res);
+        const room = Rooms.getFromNav(req.params['id'], res);
         if (!room) return;
 
         const inviteLink = await Spotify.Authentication.generatePermissionURL(
@@ -80,7 +84,7 @@ export namespace Rest {
 
     function getRoomFromPost(req: express.Request, res: express.Response) {
         const roomID = req.body['room'];
-        const room = Rooms.get(roomID);
+        const room = Rooms.getFromXHR(roomID);
         const activeMember = room ? Rooms.getActiveMember(room, req) : null;
 
         if (!room || !activeMember) {

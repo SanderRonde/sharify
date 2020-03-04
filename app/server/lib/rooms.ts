@@ -267,15 +267,16 @@ export namespace Rooms {
         return new Room();
     }
 
-    export function get(id: string): Room | null;
-    export function get(id: string, res: express.Response): Room | null;
-    export function get(id: string, res?: express.Response): Room | null {
+    export function getFromNav(id: string, res: express.Response): Room | null {
         const room = roomMap.get(id);
         if (!room && res) {
-            res.status(404);
-            res.write('No room with that ID');
-            res.end();
+            res.redirect('/404');
         }
+        return room || null;
+    }
+
+    export function getFromXHR(id: string): Room | null {
+        const room = roomMap.get(id);
         return room || null;
     }
 
@@ -308,12 +309,18 @@ export namespace Rooms {
 
     export async function addToRoom(
         roomID: string,
+        res: express.Response,
         authData: SpotifyTypes.Endpoints.AuthToken,
         isHost: boolean
     ) {
-        const room = Rooms.get(roomID);
+        const room = Rooms.getFromNav(roomID, res);
         if (room) {
-            return await room.addMember(authData, isHost);
+            const result = await room.addMember(authData, isHost);
+            if (result === null) {
+                res.redirect('/404');
+                return;
+            }
+            return result;
         }
         return null;
     }

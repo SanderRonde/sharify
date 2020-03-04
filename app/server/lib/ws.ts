@@ -6,7 +6,7 @@ import * as WebSocket from 'ws';
 export namespace WS {
     export async function subscribe(ws: WebSocket, req: express.Request) {
         const id = req.params['id'];
-        const room = Rooms.get(id);
+        const room = Rooms.getFromXHR(id);
         const activeMember = room ? Rooms.getActiveMember(room, req) : null;
 
         if (!room || !activeMember) {
