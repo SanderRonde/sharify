@@ -43,6 +43,24 @@ const DEFAULT_STATE = {
             name: 'Sander Image',
             email: 'awsdfgvhbjn@gmail.com',
         },
+        {
+            id: 'something4',
+            isAdmin: false,
+            isMe: false,
+            image:
+                'https://help.seesaw.me/hc/en-us/article_attachments/203872726/cow.png',
+            name: 'Sander Image',
+            email: 'awsdfgvhbjn@gmail.com',
+        },
+        {
+            id: 'something5',
+            isAdmin: false,
+            isMe: false,
+            image:
+                'https://help.seesaw.me/hc/en-us/article_attachments/203872726/cow.png',
+            name: 'Sander Image',
+            email: 'awsdfgvhbjn@gmail.com',
+        },
     ] as RoomMember[],
 };
 
