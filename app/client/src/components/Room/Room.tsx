@@ -85,7 +85,6 @@ class Room extends React.Component<
           };
 
     handleMessage(message: WebsocketMessage) {
-        console.log(message);
         switch (message.type) {
             case 'connect':
                 if (message.success === false && !DEBUG) {
@@ -133,7 +132,7 @@ class Room extends React.Component<
                 description: 'Disconnected from server, reconnecting in 15 seconds'
             });
             setTimeout(() => this.connect, 15 * 1000);
-            
+
         }
     }
 
