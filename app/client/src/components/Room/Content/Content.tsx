@@ -16,7 +16,7 @@ export default function Content({
     return (
         <Container>
             <Row
-                gutter={[2, 2] as [Gutter, Gutter]}
+                gutter={[2, 20] as [Gutter, Gutter]}
 				style={{ flexGrow: 100 }}
             >
                 <Col md={16} xs={24}>
