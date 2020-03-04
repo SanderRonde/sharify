@@ -8,7 +8,7 @@ export default function Playlist({ id }: { id: string | null }) {
 
     if (!id) {
         return (
-            <Verticalcenterer>
+            <Verticalcenterer style={{ minHeight: '70vh' }}>
                 <Spin style={{ width: '100%' }} size="large" />
             </Verticalcenterer>
         );
@@ -16,11 +16,20 @@ export default function Playlist({ id }: { id: string | null }) {
 
     return (
         <Verticalcenterer>
-            <Spin style={{ width: '100%' }} size="large" spinning={isLoading} delay={500}>
+            <Spin
+                style={{ width: '100%' }}
+                size="large"
+                spinning={isLoading}
+                delay={500}
+            >
                 <iframe
                     title="spotify-playlist"
                     src={`https://open.spotify.com/embed/playlist/${id}`}
-                    style={{ minHeight: '70vh', width: '100%', marginTop: '15px' }}
+                    style={{
+                        minHeight: '70vh',
+                        width: '100%',
+                        marginTop: '15px',
+                    }}
                     frameBorder="0"
                     //@ts-ignore
                     allowtransparency="true"

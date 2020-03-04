@@ -32,7 +32,7 @@ class MemberList extends React.Component<
     render() {
         if (this.props.members.length === 0) {
             return (
-                <Verticalcenterer>
+                <Verticalcenterer style={{ minHeight: '70vh'  }}>
                     <Spin style={{ width: '100%' }} size="large" />
                 </Verticalcenterer>
             );
