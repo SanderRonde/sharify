@@ -120,7 +120,7 @@ class Room extends React.Component<
     }
 
     connect() {
-        const isSecure = window.location.protocol === 'https';
+        const isSecure = window.location.protocol === 'https:';
         const protocol = isSecure ? 'wss' : 'ws';
         const ws = new WebSocket(
             `${protocol}://${window.location.host}/ws/room/${this.props.id}`
