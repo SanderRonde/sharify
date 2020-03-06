@@ -1,3 +1,4 @@
+import Statistics from './components/SingleMessagePages/Statistics/Statistics';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import Rejected from './components/SingleMessagePages/Rejected/Rejected';
 import FiveHundred from './components/SingleMessagePages/500/500';
@@ -19,6 +20,9 @@ export default class AppRouter extends React.Component {
                     </Route>
                     <Route path="/500">
                         <FiveHundred />
+                    </Route>
+                    <Route path="/statistics">
+                        <Statistics />
                     </Route>
                     <Route path="/rejected/:url">
                         <Rejected />
