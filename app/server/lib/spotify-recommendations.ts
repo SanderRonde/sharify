@@ -368,6 +368,15 @@ export class Recommendations {
             trackOverlap.map((t) => t.track).join(", ")
         );
 
+        var fs = require("fs");
+        fs.writeFile("./vis_json/tracks.json", JSON.stringify(this._getOverlap(tracks), null, 4), (err: any) => {
+            if (err) {
+                console.error(err);
+                return;
+            };
+            console.log("File has been created");
+        });
+
         let recommendations: TrackRecommendation[] = [
             // Overlapping tracks
             ...trackOverlap.map((recommendation) => {
@@ -394,6 +403,15 @@ export class Recommendations {
             artistOverlap.map((a) => a.artist).join(", ")
         );
 
+        fs.writeFile("./vis_json/artists.json", JSON.stringify(this._getOverlap(artists), null, 4), (err: any) => {
+            if (err) {
+                console.error(err);
+                return;
+            };
+            console.log("File has been created");
+        });
+        
+
         // Check for overlapping genres
         const genreOverlap = this._getOverlap(genres);
         config.seed_genres = [
@@ -405,6 +423,14 @@ export class Recommendations {
             "Genre overlap:\n",
             genreOverlap.map((g) => g.genre).join(", ")
         );
+
+        fs.writeFile("./vis_json/genres.json", JSON.stringify(this._getOverlap(genres), null, 4), (err: any) => {
+            if (err) {
+                console.error(err);
+                return;
+            };
+            console.log("File has been created");
+        });
 
         // Fetch based on overlapping values
         if (
