@@ -19,7 +19,7 @@ Matchmaking system for multiple Spotify users to create a list which has songs b
 ## TODO
 
 ### Back-end
-- [x] ~~Setup Github repo~~
+- [x] Setup Github repo
 - [x] Create web-interface for single user sign in
 - [x] Support multiple user log in / store auth keys
 - [x] Create playlist based on musical preferences
@@ -27,11 +27,11 @@ Matchmaking system for multiple Spotify users to create a list which has songs b
 - [ ] **(bonus):** allow parameters for better recommendation (min. artist, min. numbers, 'danceability (?)', etc…) 
 - [x] **(bonus):** Host service on website
 ### Front-end
-- [ ] Design individual pages (or just yolo it) 
-- [ ] Pages
-- - [ ] Landing page
-- - [ ] Invite page
-- - [ ] Playlist page
+- [x] Design individual pages (or just yolo it) 
+- [x] Pages
+- - [x] Landing page
+- - [x] Invite page
+- - [x] Playlist page
 - [ ] Support data visualisation
 - [x] Allow sharing of links to others so they can connect to the session (QR?)
 - [ ] **(bonus):** show users the overlapping artists, genres etc
