@@ -63,14 +63,20 @@ class Room extends React.Component<
         const ws = new WebSocket(
             `${protocol}://${window.location.host}/ws/room/${this.props.id}`
         );
-        ws.onmessage = (m) => this.onMessage(m);
+        ws.onmessage = (m) => {
+            if (m.data === 'pong') return;
+            this.onMessage(m);
+        }
+        const interval = window.setInterval(() => {
+            ws.send('ping');
+        }, 1000 * 60);
         ws.onclose = () => {
+            window.clearInterval(interval);
             notification.open({
                 message: 'Disconnected',
                 description: 'Disconnected from server, reconnecting in 15 seconds'
             });
             setTimeout(() => this.connect, 15 * 1000);
-
         }
     }
 
