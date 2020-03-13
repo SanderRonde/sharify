@@ -4,13 +4,6 @@
         "genre": "pop",
         "id": "pop",
         "occurences": 4,
-        "ranking": 8
-    },
-    {
-        "type": "genre",
-        "occurences": 1,
-        "id": "edm",
-        "ranking": 33,
-        "genre": "edm"
+        "ranking": 1
     }
 ]

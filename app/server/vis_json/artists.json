@@ -1,64 +1,64 @@
 [
     {
         "type": "artist",
-        "artist": "Post Malone",
-        "id": "246dkjvS1zLTtiykXe5h60",
+        "artist": "Khalid",
+        "id": "6LuN9FCkKOj5PcnpouEgny",
         "ranking": 0,
         "occurences": 1
     },
     {
         "type": "artist",
-        "artist": "Snelle",
-        "id": "3E31HqA00iCX9nRhesw6LD",
+        "artist": "Lauv",
+        "id": "5JZ7CnR6gTvEMKX4g70Amv",
         "ranking": 1,
-        "occurences": 1
-    },
-    {
-        "type": "artist",
-        "artist": "Juice WRLD",
-        "id": "4MCBfE4596Uoi2O4DtmEMz",
-        "ranking": 2,
-        "occurences": 1
-    },
-    {
-        "type": "artist",
-        "artist": "Khalid",
-        "id": "6LuN9FCkKOj5PcnpouEgny",
-        "ranking": 3,
         "occurences": 1
     },
     {
         "type": "artist",
         "artist": "Maan",
         "id": "5vmwWgrlwCfHm1P0vdDFbU",
-        "ranking": 4,
+        "ranking": 2,
         "occurences": 1
     },
     {
         "type": "artist",
         "artist": "French Montana",
         "id": "6vXTefBL93Dj5IqAWq6OTv",
-        "ranking": 5,
+        "ranking": 3,
         "occurences": 1
     },
     {
         "type": "artist",
         "artist": "Eminem",
         "id": "7dGJo4pcD2V6oG8kP0tJRR",
-        "ranking": 6,
+        "ranking": 4,
         "occurences": 1
     },
     {
         "type": "artist",
         "artist": "The Chainsmokers",
         "id": "69GGBxA162lTqCwzJG5jLp",
-        "ranking": 7,
+        "ranking": 5,
         "occurences": 1
     },
     {
         "type": "artist",
         "artist": "Tory Lanez",
         "id": "2jku7tDXc6XoB6MO2hFuqg",
+        "ranking": 6,
+        "occurences": 1
+    },
+    {
+        "type": "artist",
+        "artist": "Drake",
+        "id": "3TVXtAsR1Inumwj472S9r4",
+        "ranking": 7,
+        "occurences": 1
+    },
+    {
+        "type": "artist",
+        "artist": "Chef'Special",
+        "id": "7IiSLreTg1of8dDwxwiPw3",
         "ranking": 8,
         "occurences": 1
     },
@@ -71,29 +71,29 @@
     },
     {
         "type": "artist",
-        "artist": "Snelle",
-        "id": "3E31HqA00iCX9nRhesw6LD",
+        "artist": "Juice WRLD",
+        "id": "4MCBfE4596Uoi2O4DtmEMz",
         "occurences": 2,
+        "ranking": 20
+    },
+    {
+        "type": "artist",
+        "artist": "Don Toliver",
+        "id": "4Gso3d4CscCijv0lmajZWs",
+        "occurences": 1,
         "ranking": 10
     },
     {
         "type": "artist",
-        "artist": "Tory Lanez",
-        "id": "2jku7tDXc6XoB6MO2hFuqg",
-        "occurences": 2,
+        "artist": "Quavo",
+        "id": "0VRj0yCOv2FXJNP47XQnx5",
+        "occurences": 1,
         "ranking": 11
     },
     {
         "type": "artist",
-        "artist": "Maan",
-        "id": "5vmwWgrlwCfHm1P0vdDFbU",
-        "occurences": 2,
-        "ranking": 17
-    },
-    {
-        "type": "artist",
-        "artist": "Chris Brown",
-        "id": "7bXgB6jMjp9ATFy66eO08Z",
+        "artist": "Offset",
+        "id": "4DdkRBBYG6Yk9Ka8tdJ9BW",
         "occurences": 1,
         "ranking": 12
     },
@@ -106,58 +106,86 @@
     },
     {
         "type": "artist",
-        "artist": "Logic",
-        "id": "4xRYI6VqpkE3UwrDrAZL8L",
+        "artist": "SLV",
+        "id": "6skmfLMn6Sb1VVutCoSO8E",
         "occurences": 1,
         "ranking": 14
     },
     {
         "type": "artist",
-        "artist": "Dwn2earth",
-        "id": "2ums0zsrtQqsI77ol2KIRt",
+        "artist": "Z.I.P.P.O",
+        "id": "4eZ6EbyIqRsq67WRTV8AAc",
         "occurences": 1,
         "ranking": 15
     },
     {
         "type": "artist",
-        "artist": "Dave Budha",
-        "id": "6zIx5dF0NrdVdbqF5JuuP7",
+        "artist": "Post Malone",
+        "id": "246dkjvS1zLTtiykXe5h60",
         "occurences": 1,
         "ranking": 16
     },
     {
         "type": "artist",
-        "artist": "Jagged Edge",
-        "id": "7Aq8lpLMSt1Zxu56pe9bmp",
+        "artist": "Eminem",
+        "id": "7dGJo4pcD2V6oG8kP0tJRR",
+        "occurences": 1,
+        "ranking": 17
+    },
+    {
+        "type": "artist",
+        "artist": "Royce Da 5'9\"",
+        "id": "6DVipHzYsPlIoA0DW8Gmns",
+        "occurences": 1,
+        "ranking": 18
+    },
+    {
+        "type": "artist",
+        "artist": "White Gold",
+        "id": "79KQgTCu4wV38ECYKn62DZ",
         "occurences": 1,
         "ranking": 19
     },
     {
         "type": "artist",
-        "artist": "Jermaine Dupri",
-        "id": "6nfYGe7IIuuP5bMY1jkJP6",
-        "occurences": 1,
-        "ranking": 20
-    },
-    {
-        "type": "artist",
-        "artist": "DROELOE",
-        "id": "0u18Cq5stIQLUoIaULzDmA",
+        "artist": "Young Thug",
+        "id": "50co4Is1HCEo8bhOyUWKpn",
         "occurences": 1,
         "ranking": 21
     },
     {
         "type": "artist",
-        "artist": "Frenna",
-        "id": "6m1LYS5NQonxjOcQFPQOb5",
+        "artist": "J. Cole",
+        "id": "6l3HvQ5sa6mXTsMTB19rO5",
+        "occurences": 1,
+        "ranking": 22
+    },
+    {
+        "type": "artist",
+        "artist": "Travis Scott",
+        "id": "0Y5tJX1MQlPlqiwlOH1tJY",
         "occurences": 1,
         "ranking": 23
     },
     {
         "type": "artist",
-        "artist": "Juice WRLD",
-        "id": "4MCBfE4596Uoi2O4DtmEMz",
+        "artist": "Snelle",
+        "id": "3E31HqA00iCX9nRhesw6LD",
         "occurences": 1,
         "ranking": 24
+    },
+    {
+        "type": "artist",
+        "artist": "MC Kevin o Chris",
+        "id": "2UMj7NCbuqy1yUZmiSYGjJ",
+        "occurences": 1,
+        "ranking": 26
+    },
+    {
+        "type": "artist",
+        "artist": "Drake",
+        "id": "3TVXtAsR1Inumwj472S9r4",
+        "occurences": 1,
+        "ranking": 27
     }
 ]
