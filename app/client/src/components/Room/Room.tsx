@@ -2,69 +2,9 @@ import { WebsocketMessage, RoomMember } from '../../../../shared/ws';
 import { Background } from '../shared/styles';
 import Content from './Content/Content';
 import Header from './Header/Header';
+import { notification } from 'antd';
 import { Page } from './styles';
 import React from 'react';
-import { notification } from 'antd';
-
-const DEBUG = false;
-const DEBUG_HOST = true;
-const DEFAULT_STATE = {
-    playlistID: '1lJr8Bej7l1x69s582H4wo',
-    members: [
-        {
-            id: 'something',
-            isAdmin: false,
-            isMe: false,
-            image: null,
-            name: 'Sander Normal',
-            email: 'awsdfgvhbjn@gmail.com',
-        },
-        {
-            id: 'something1',
-            isAdmin: true,
-            isMe: false,
-            image: null,
-            name: 'Sander Host',
-            email: 'awsdfgvhbjn@gmail.com',
-        },
-        {
-            id: 'something2',
-            isHost: DEBUG_HOST,
-            isAdmin: true,
-            isMe: true,
-            image: null,
-            name: 'Sander Me',
-            email: 'awsdfgvhbjn@gmail.com',
-        },
-        {
-            id: 'something3',
-            isAdmin: false,
-            isMe: false,
-            image:
-                'https://help.seesaw.me/hc/en-us/article_attachments/203872726/cow.png',
-            name: 'Sander Image',
-            email: 'awsdfgvhbjn@gmail.com',
-        },
-        {
-            id: 'something4',
-            isAdmin: false,
-            isMe: false,
-            image:
-                'https://help.seesaw.me/hc/en-us/article_attachments/203872726/cow.png',
-            name: 'Sander Image',
-            email: 'awsdfgvhbjn@gmail.com',
-        },
-        {
-            id: 'something5',
-            isAdmin: false,
-            isMe: false,
-            image:
-                'https://help.seesaw.me/hc/en-us/article_attachments/203872726/cow.png',
-            name: 'Sander Image',
-            email: 'awsdfgvhbjn@gmail.com',
-        },
-    ] as RoomMember[],
-};
 
 interface Props {
     id: string;
@@ -77,17 +17,15 @@ class Room extends React.Component<
         members: RoomMember[];
     }
 > {
-    state = DEBUG
-        ? DEFAULT_STATE
-        : {
-              playlistID: null,
-              members: [],
-          };
+    state = {
+        playlistID: null,
+        members: [],
+    };
 
     handleMessage(message: WebsocketMessage) {
         switch (message.type) {
             case 'connect':
-                if (message.success === false && !DEBUG) {
+                if (message.success === false) {
                     // Failed to connect, redirect to 404
                     notification.open({
                         message: 'Room not found',
