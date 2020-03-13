@@ -21,7 +21,7 @@ class InviteModal extends React.Component<
     };
 
     get url() {
-        return `${window.location.origin}/room/${this.props.roomID}/join`;
+        return `${window.location.origin}/api/room/${this.props.roomID}/join`;
     }
 
     copyToClipboard() {

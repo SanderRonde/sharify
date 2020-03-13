@@ -23,6 +23,13 @@ export namespace WS {
         ws.onclose = () => {
             room.unsubscribe(ws);
         };
+        ws.onmessage = (e) => {
+            if (e.data.toString() === 'ping') {
+                ws.send('pong');
+            } else if (e.data.toString() === 'pong') {
+                // Do nothing
+            }
+        }
         room.subscribe(ws, activeMember, (message) => {
             ws.send(JSON.stringify(message));
         });
