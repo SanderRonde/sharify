@@ -132,3 +132,4 @@ app/client/build
 app/client/design
 
 TODO
+app/server/vis_json/*.json
