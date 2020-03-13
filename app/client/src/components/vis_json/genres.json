@@ -1,0 +1,16 @@
+[
+    {
+        "type": "genre",
+        "genre": "edm",
+        "id": "edm",
+        "occurences": 2,
+        "ranking": 14
+    },
+    {
+        "type": "genre",
+        "occurences": 2,
+        "id": "pop",
+        "ranking": 32,
+        "genre": "pop"
+    }
+]

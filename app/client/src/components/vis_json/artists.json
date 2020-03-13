@@ -1,0 +1,170 @@
+[
+    {
+        "type": "artist",
+        "artist": "JACKBOYS",
+        "id": "7A8S43ryYdbWpJKeHRZRcq",
+        "ranking": 0,
+        "occurences": 1
+    },
+    {
+        "type": "artist",
+        "artist": "J. Cole",
+        "id": "6l3HvQ5sa6mXTsMTB19rO5",
+        "ranking": 1,
+        "occurences": 1
+    },
+    {
+        "type": "artist",
+        "artist": "Marco Borsato",
+        "id": "3D2GUXbtlL3r2d5HJEnsFD",
+        "ranking": 2,
+        "occurences": 1
+    },
+    {
+        "type": "artist",
+        "artist": "BLØF",
+        "id": "0KQX2wRHV2VLjuscfJFNxB",
+        "ranking": 3,
+        "occurences": 1
+    },
+    {
+        "type": "artist",
+        "artist": "DROELOE",
+        "id": "0u18Cq5stIQLUoIaULzDmA",
+        "ranking": 4,
+        "occurences": 1
+    },
+    {
+        "type": "artist",
+        "artist": "Ronald Jenkees",
+        "id": "5UmeRtxfJxx9iUnyUP8dFm",
+        "ranking": 5,
+        "occurences": 1
+    },
+    {
+        "type": "artist",
+        "artist": "Dave Budha",
+        "id": "6zIx5dF0NrdVdbqF5JuuP7",
+        "ranking": 6,
+        "occurences": 1
+    },
+    {
+        "type": "artist",
+        "artist": "Travis Scott",
+        "id": "0Y5tJX1MQlPlqiwlOH1tJY",
+        "ranking": 7,
+        "occurences": 1
+    },
+    {
+        "type": "artist",
+        "artist": "Future",
+        "id": "1RyvyyTE3xzB2ZywiAwp0i",
+        "ranking": 8,
+        "occurences": 1
+    },
+    {
+        "type": "artist",
+        "artist": "NF",
+        "id": "6fOMl44jA4Sp5b9PpYCkzz",
+        "ranking": 9,
+        "occurences": 1
+    },
+    {
+        "type": "artist",
+        "artist": "Snelle",
+        "id": "3E31HqA00iCX9nRhesw6LD",
+        "occurences": 2,
+        "ranking": 12
+    },
+    {
+        "type": "artist",
+        "artist": "Tory Lanez",
+        "id": "2jku7tDXc6XoB6MO2hFuqg",
+        "occurences": 2,
+        "ranking": 13
+    },
+    {
+        "type": "artist",
+        "artist": "French Montana",
+        "id": "6vXTefBL93Dj5IqAWq6OTv",
+        "occurences": 1,
+        "ranking": 10
+    },
+    {
+        "type": "artist",
+        "artist": "John Lindahl",
+        "id": "2ei3ToTz5SL3pVp17X0Vkd",
+        "occurences": 1,
+        "ranking": 11
+    },
+    {
+        "type": "artist",
+        "artist": "Chris Brown",
+        "id": "7bXgB6jMjp9ATFy66eO08Z",
+        "occurences": 1,
+        "ranking": 14
+    },
+    {
+        "type": "artist",
+        "artist": "Coldplay",
+        "id": "4gzpq5DPGxSnKTe4SA8HAU",
+        "occurences": 1,
+        "ranking": 15
+    },
+    {
+        "type": "artist",
+        "artist": "Dave Budha",
+        "id": "6zIx5dF0NrdVdbqF5JuuP7",
+        "occurences": 1,
+        "ranking": 16
+    },
+    {
+        "type": "artist",
+        "artist": "Maan",
+        "id": "5vmwWgrlwCfHm1P0vdDFbU",
+        "occurences": 1,
+        "ranking": 17
+    },
+    {
+        "type": "artist",
+        "artist": "Logic",
+        "id": "4xRYI6VqpkE3UwrDrAZL8L",
+        "occurences": 1,
+        "ranking": 18
+    },
+    {
+        "type": "artist",
+        "artist": "Dwn2earth",
+        "id": "2ums0zsrtQqsI77ol2KIRt",
+        "occurences": 1,
+        "ranking": 19
+    },
+    {
+        "type": "artist",
+        "artist": "Jagged Edge",
+        "id": "7Aq8lpLMSt1Zxu56pe9bmp",
+        "occurences": 1,
+        "ranking": 21
+    },
+    {
+        "type": "artist",
+        "artist": "Jermaine Dupri",
+        "id": "6nfYGe7IIuuP5bMY1jkJP6",
+        "occurences": 1,
+        "ranking": 22
+    },
+    {
+        "type": "artist",
+        "artist": "DROELOE",
+        "id": "0u18Cq5stIQLUoIaULzDmA",
+        "occurences": 1,
+        "ranking": 23
+    },
+    {
+        "type": "artist",
+        "artist": "Frenna",
+        "id": "6m1LYS5NQonxjOcQFPQOb5",
+        "occurences": 1,
+        "ranking": 25
+    }
+]
