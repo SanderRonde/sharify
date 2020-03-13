@@ -65,6 +65,10 @@ class Room extends React.Component<
         );
         ws.onmessage = (m) => {
             if (m.data === 'pong') return;
+            if (m.data === 'ping') {
+                ws.send('pong');
+                return;
+            }
             this.onMessage(m);
         }
         const interval = window.setInterval(() => {

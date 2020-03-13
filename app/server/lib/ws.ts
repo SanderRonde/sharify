@@ -26,6 +26,8 @@ export namespace WS {
         ws.onmessage = (e) => {
             if (e.data.toString() === 'ping') {
                 ws.send('pong');
+            } else if (e.data.toString() === 'pong') {
+                // Do nothing
             }
         }
         room.subscribe(ws, activeMember, (message) => {
