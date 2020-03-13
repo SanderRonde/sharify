@@ -369,7 +369,8 @@ export class Recommendations {
         );
 
         var fs = require("fs");
-        fs.writeFile("./vis_json/tracks.json", JSON.stringify(this._getOverlap(tracks), null, 4), (err: any) => {
+        // fs.writeFile("./vis_json/tracks.json", JSON.stringify(this._getOverlap(tracks), null, 4), (err: any) => {
+        fs.writeFile("./../client/src/components/vis_json/tracks.json", JSON.stringify(this._getOverlap(tracks), null, 4), (err: any) => {
             if (err) {
                 console.error(err);
                 return;
@@ -403,7 +404,8 @@ export class Recommendations {
             artistOverlap.map((a) => a.artist).join(", ")
         );
 
-        fs.writeFile("./vis_json/artists.json", JSON.stringify(this._getOverlap(artists), null, 4), (err: any) => {
+        // fs.writeFile("./vis_json/artists.json", JSON.stringify(this._getOverlap(artists), null, 4), (err: any) => {
+        fs.writeFile("./../client/src/components/vis_json/artists.json", JSON.stringify(this._getOverlap(artists), null, 4), (err: any) => {
             if (err) {
                 console.error(err);
                 return;
@@ -424,7 +426,8 @@ export class Recommendations {
             genreOverlap.map((g) => g.genre).join(", ")
         );
 
-        fs.writeFile("./vis_json/genres.json", JSON.stringify(this._getOverlap(genres), null, 4), (err: any) => {
+        // fs.writeFile("./vis_json/genres.json", JSON.stringify(this._getOverlap(genres), null, 4), (err: any) => {
+        fs.writeFile("./../client/src/components/vis_json/genres.json", JSON.stringify(this._getOverlap(genres), null, 4), (err: any) => {
             if (err) {
                 console.error(err);
                 return;
