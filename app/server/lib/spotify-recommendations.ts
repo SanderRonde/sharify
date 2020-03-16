@@ -118,6 +118,23 @@ export class UserRecommendations {
         return sorted;
     }
 
+    private _mapGenre(genre: GenreRecommendationGroup) {
+        if (SEEDABLES.includes(genre.genre)) {
+            return genre;
+        }
+
+        // If prt of a known genre is in this genre, chances are it's
+        // a derivative
+        for (const seedable of SEEDABLES) {
+            if (genre.genre.includes(seedable)) {
+                genre.genre = seedable;
+                return genre;
+            }
+        }
+
+        return null;
+    }
+
     private async _createRecommendationGroups() {
         this.groups.push(
             ...this.topTracks.map(({ type, name, id }, index) => {
@@ -201,9 +218,7 @@ export class UserRecommendations {
             ),
             ...this._sortByRanking(
                 UserRecommendations.joinDuplicates(
-                    genres.filter((genre) => {
-                        return SEEDABLES.indexOf(genre.genre) !== -1;
-                    })
+                    genres.map(this._mapGenre).filter(v => !!v) as GenreRecommendationGroup[]
                 )
             )
         );
