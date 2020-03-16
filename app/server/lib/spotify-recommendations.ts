@@ -19,6 +19,7 @@ interface RecommendationGroupBase {
     ranking: number;
     occurences: number;
     id: string;
+    type: string;
 }
 
 interface ArtistRecommendationGroup extends RecommendationGroupBase {
@@ -35,6 +36,8 @@ interface TrackRecommendationGroup extends RecommendationGroupBase {
 interface GenreRecommendationGroup extends RecommendationGroupBase {
     type: 'genre';
     genre: string;
+    trackNames: string[];
+    artistNames: string[];
 }
 
 type RecommendationGroup =
@@ -100,13 +103,13 @@ export class UserRecommendations {
         });
     }
 
-    public static joinDuplicates<V extends RecommendationGroupBase>(
+    public static joinDuplicates<V extends RecommendationGroup>(
         recommendations: V[]
     ): V[] {
         const sorted = [...recommendations]
             .sort((a, b) => a.ranking - b.ranking)
             // Remove any object links
-            .map((value) => JSON.parse(JSON.stringify(value)));
+            .map((value) => JSON.parse(JSON.stringify(value))) as V[];
         for (let i = sorted.length - 1; i >= 0; i--) {
             const value = sorted[i];
             for (const sortedMatch of sorted) {
@@ -114,6 +117,19 @@ export class UserRecommendations {
                 if (value.id === sortedMatch.id) {
                     sortedMatch.occurences++;
                     sorted.splice(i, 1);
+
+                    if (sortedMatch.type === 'genre') {
+                        const genreMatch = sortedMatch as GenreRecommendationGroup;
+                        const genreValue = value as GenreRecommendationGroup;
+                        genreMatch.trackNames = [
+                            ...(genreMatch.trackNames || []),
+                            ...(genreValue.trackNames || []),
+                        ];
+                        genreMatch.artistNames = [
+                            ...(genreMatch.artistNames || []),
+                            ...(genreValue.artistNames || []),
+                        ];
+                    }
                     break;
                 }
             }
@@ -139,16 +155,19 @@ export class UserRecommendations {
         return null;
     }
 
+    private _trackFullName({ artists, name }: SpotifyTypes.Track) {
+        return `${artists.map((a) => a.name).join(' & ')} - ${name}`;
+    }
+
     private async _createRecommendationGroups() {
         this.groups.push(
-            ...this.topTracks.map(({ type, name, id, artists }, index) => {
+            ...this.topTracks.map((track, index) => {
+                const { type, name, id } = track;
                 return {
                     type,
                     track: name,
                     id,
-                    fullName: `${artists
-                        .map((a) => a.name)
-                        .join(' & ')} - ${name}`,
+                    fullName: this._trackFullName(track),
                     ranking: index,
                     occurences: 1,
                 };
@@ -190,6 +209,8 @@ export class UserRecommendations {
                     id: genre,
                     occurences: 1,
                     ranking: genres.length,
+                    artistNames: [topArtist.name],
+                    trackNames: [],
                 });
             });
         });
@@ -207,12 +228,23 @@ export class UserRecommendations {
             } = await trackArtistDetailReq.json();
             trackArtistDetail.forEach((artist) => {
                 artist.genres.forEach((genre) => {
+                    // Find the track that this artist belongs to
+                    const matchingTrack = this.topTracks.find((track) => {
+                        return track.artists.some((trackArtist) => {
+                            trackArtist.id === artist.id;
+                        });
+                    });
+
                     genres.push({
                         type: 'genre',
                         occurences: 1,
                         id: genre,
                         ranking: trackArtistGenreRanking,
                         genre,
+                        artistNames: [],
+                        trackNames: matchingTrack
+                            ? [this._trackFullName(matchingTrack)]
+                            : [],
                     });
                 });
             });
@@ -284,7 +316,7 @@ export class Recommendations {
         return overlap;
     }
 
-    private _getJoined<G extends RecommendationGroupBase>(values: G[][]): G[] {
+    private _getJoined<G extends RecommendationGroup>(values: G[][]): G[] {
         return UserRecommendations.joinDuplicates(Util.flat(values));
     }
 
@@ -436,6 +468,10 @@ export class Recommendations {
         this.statistics.genreOverlap = genreOverlap.map((genre) => ({
             name: genre.genre,
             amount: genre.occurences,
+            genreData: {
+                artists: genre.artistNames,
+                tracks: genre.trackNames
+            }
         }));
 
         let recommendations: TrackRecommendation[] = [

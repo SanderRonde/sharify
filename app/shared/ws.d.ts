@@ -14,6 +14,10 @@ export type FailableMessage<T, B> =
 export interface StatisticPoint {
     name: string;
     amount: number;
+    genreData?: {
+        artists: string[];
+        tracks: string[];
+    }
 }
 
 export interface StatisticsData {
