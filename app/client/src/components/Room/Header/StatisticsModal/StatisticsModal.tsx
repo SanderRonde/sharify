@@ -16,7 +16,13 @@ class StatisticsModal extends React.Component<
                 visible={this.props.visible}
                 footer={null}
                 onCancel={this.props.onHide}
-                title="Room statistics"
+				title="Room statistics"
+				centered
+				width={800}
+				bodyStyle={{
+					height: '80vh',
+					padding: '0'
+				}}
             >
                 <Statistics statistics={this.props.statistics} />
             </Modal>
