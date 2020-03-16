@@ -2,6 +2,7 @@ export namespace IO {
 	export interface IO {
 		port: number;
 		host: string;
+		spotifyRecommend: boolean;
 	}
 
 	function assertArgLength(minLength: number) {
@@ -14,7 +15,8 @@ export namespace IO {
 	export function get(): IO {
 		const io: IO = {
 			port: 1234,
-			host: ''
+			host: '',
+			spotifyRecommend: false
 		};
 
 		for (let i = 0; i < process.argv.length; i++) {
@@ -26,6 +28,8 @@ export namespace IO {
 				assertArgLength(i + 1);
 				io.host = process.argv[i + 1];
 				i++;
+			} else if (process.argv[i] === '--spotify-recommend') {
+				io.spotifyRecommend = true;
 			} else if (process.argv[i] === '-h' || process.argv[i] === '--help') {
 				console.log('Usage:');
 				console.log('');

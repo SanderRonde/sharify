@@ -8,7 +8,7 @@ export const NAME = "Sharify";
 // If true, strive to fill SPOTIFY_RECOMMENDATIONS_AMOUNT up
 // if false, try to get the best we can and let spotify's
 // recommendations handle the rest
-export const HARD_RECOMMENDATIONS_LIMIT = false;
+export const HARD_RECOMMENDATIONS_LIMIT = !IO.get().spotifyRecommend;
 
 
 /**
