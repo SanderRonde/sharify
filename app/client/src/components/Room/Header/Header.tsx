@@ -1,4 +1,6 @@
-import TuneIcon from '../../shared/icons/Tune';
+import StatisticsModal from './StatisticsModal/StatisticsModal';
+import { StatisticsData } from '../../../../../shared/ws';
+import StatsIcon from '../../shared/icons/Stats';
 import { Button, Tooltip } from 'antd';
 import styled from 'styled-components';
 import media from 'styled-media-query';
@@ -32,40 +34,69 @@ const VerticalCenter = styled.div`
     justify-content: center;
 `;
 
-export default class Header extends React.Component {
+export default class Header extends React.Component<
+    {
+        statistics: StatisticsData;
+    },
+    {
+        modalVisible: boolean;
+    }
+> {
+    state = {
+        modalVisible: false,
+    };
+
     render() {
         return (
-            <HeaderContainer>
-                <VerticalCenter>
-                    <Tooltip title="Home">
-                        <a href="/">
-                            <Logo src="/logo192.png" alt="logo" />
-                        </a>
-                    </Tooltip>
-                </VerticalCenter>
-                <VerticalCenter>
-                    <Title>{'Sharify'}</Title>
-                </VerticalCenter>
+            <>
+                <StatisticsModal
+                    visible={this.state.modalVisible}
+                    statistics={this.props.statistics}
+                    onHide={() =>
+                        this.setState({
+                            modalVisible: false,
+                        })
+                    }
+                />
+                <HeaderContainer>
+                    <VerticalCenter>
+                        <Tooltip title="Home">
+                            <a href="/">
+                                <Logo src="/logo192.png" alt="logo" />
+                            </a>
+                        </Tooltip>
+                    </VerticalCenter>
+                    <VerticalCenter>
+                        <Title>{'Sharify'}</Title>
+                    </VerticalCenter>
 
-                <VerticalCenter>
-                    <Tooltip title="Settings">
-                        <Button
-                            style={{
-                                width: 'calc(54px + 2.8vmin)',
-                                height: 'calc(54px + 2.8vmin)',
-                                padding: 'calc(7.8px + 0.5vmin)',
-                            }}
-                            size="large"
-                            shape="circle-outline"
-                            icon={
-                                <TuneIcon
-                                    style={{ fontSize: 'calc(37px + 1.4vmin)' }}
-                                />
-                            }
-                        />
-                    </Tooltip>
-                </VerticalCenter>
-            </HeaderContainer>
+                    <VerticalCenter>
+                        <Tooltip title="Statistics">
+                            <Button
+                                style={{
+                                    width: 'calc(54px + 2.8vmin)',
+                                    height: 'calc(54px + 2.8vmin)',
+                                    padding: 'calc(7.8px + 0.5vmin)',
+                                }}
+                                size="large"
+                                shape="circle-outline"
+                                icon={
+                                    <StatsIcon
+                                        style={{
+                                            fontSize: 'calc(30px + 1.4vmin)',
+                                        }}
+                                    />
+                                }
+                                onClick={() =>
+                                    this.setState({
+                                        modalVisible: true,
+                                    })
+                                }
+                            />
+                        </Tooltip>
+                    </VerticalCenter>
+                </HeaderContainer>
+            </>
         );
     }
 }

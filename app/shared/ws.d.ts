@@ -11,14 +11,21 @@ export type FailableMessage<T, B> =
           success: true;
       } & B);
 
+export interface StatisticPoint {
+    name: string;
+    amount: number;
+}
+
+export interface StatisticsData {
+    artistOverlap: StatisticPoint[];
+    genreOverlap: StatisticPoint[];
+    trackOverlap: StatisticPoint[];
+}
+
 export interface UpdateMessageData {
     members?: RoomMember[];
     playlistID?: string;
-    statistics?: {
-        artistOverlap: string[];
-        genreOverlap: string[];
-        trackOverlap: string[];
-    }
+    statistics?: StatisticsData;
 }
 
 export type WebsocketMessage =

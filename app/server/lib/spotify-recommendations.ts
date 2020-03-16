@@ -11,6 +11,7 @@ import { SpotifyTypes } from '../types/spotify';
 import { RoomMember, Room } from './rooms';
 import { Util } from './util';
 import { RecommendationConfig } from './spotify-endpoints';
+import { StatisticsData } from '../../shared/ws';
 
 interface RecommendationGroupBase {
     ranking: number;
@@ -25,6 +26,7 @@ interface ArtistRecommendationGroup extends RecommendationGroupBase {
 
 interface TrackRecommendationGroup extends RecommendationGroupBase {
     type: 'track';
+    fullName: string;
     track: string;
 }
 
@@ -137,11 +139,12 @@ export class UserRecommendations {
 
     private async _createRecommendationGroups() {
         this.groups.push(
-            ...this.topTracks.map(({ type, name, id }, index) => {
+            ...this.topTracks.map(({ type, name, id, artists }, index) => {
                 return {
                     type,
                     track: name,
                     id,
+                    fullName: `${artists.map(a => a.name).join(' & ')} - ${name}`,
                     ranking: index,
                     occurences: 1,
                 };
@@ -240,11 +243,7 @@ export class Recommendations {
         id: string;
         lastRecommendations: TrackRecommendation[];
     } | null = null;
-    public statistics: {
-        trackOverlap: string[];
-        artistOverlap: string[];
-        genreOverlap: string[];
-    } = {
+    public statistics: StatisticsData = {
         trackOverlap: [],
         artistOverlap: [],
         genreOverlap: [],
@@ -395,7 +394,10 @@ export class Recommendations {
             trackOverlap.map((t) => t.track).join(', ')
         );
 
-        this.statistics.trackOverlap = trackOverlap.map((a) => a.track);
+        this.statistics.trackOverlap = trackOverlap.map((track) => ({
+            name: track.fullName,
+            amount: track.occurences
+        }));
 
         let recommendations: TrackRecommendation[] = [
             // Overlapping tracks
@@ -423,7 +425,10 @@ export class Recommendations {
             artistOverlap.map((a) => a.artist).join(', ')
         );
 
-        this.statistics.artistOverlap = artistOverlap.map((a) => a.artist);
+        this.statistics.artistOverlap = artistOverlap.map((artist) => ({
+            name: artist.artist,
+            amount: artist.occurences
+        }));
 
         // Check for overlapping genres
         const genreOverlap = this._getOverlap(genres);
@@ -437,7 +442,10 @@ export class Recommendations {
             genreOverlap.map((g) => g.genre).join(', ')
         );
 
-        this.statistics.genreOverlap = genreOverlap.map((a) => a.genre);
+        this.statistics.genreOverlap = genreOverlap.map((genre) => ({
+            name: genre.genre,
+            amount: genre.occurences
+        }));
 
         // Fetch based on overlapping values
         if (

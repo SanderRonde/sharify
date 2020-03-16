@@ -1,4 +1,4 @@
-import { WebsocketMessage, RoomMember } from '../../../../shared/ws';
+import { WebsocketMessage, RoomMember, StatisticsData } from '../../../../shared/ws';
 import { Background } from '../shared/styles';
 import Content from './Content/Content';
 import Header from './Header/Header';
@@ -15,11 +15,17 @@ class Room extends React.Component<
     {
         playlistID: string | null;
         members: RoomMember[];
+        statistics: StatisticsData;
     }
 > {
     state = {
         playlistID: null,
         members: [],
+        statistics: {
+            artistOverlap: [],
+            genreOverlap: [],
+            trackOverlap: []
+        }
     };
 
     handleMessage(message: WebsocketMessage) {
@@ -41,6 +47,7 @@ class Room extends React.Component<
                     this.setState({
                         members: message.members || this.state.members,
                         playlistID: message.playlistID || this.state.playlistID,
+                        statistics: message.statistics || this.state.statistics
                     });
                 } else {
                     notification.open({
@@ -92,7 +99,7 @@ class Room extends React.Component<
         return (
             <Background>
                 <Page>
-                    <Header />
+                    <Header statistics={this.state.statistics} />
                     <Content
                         members={this.state.members}
                         roomID={this.props.id}
