@@ -14,7 +14,6 @@ export const HARD_RECOMMENDATIONS_LIMIT = !IO.get().spotifyRecommend;
 /**
  * Room options that are unlikely to change
  */
-export const ROOM_ID_LENGTH = 32;
 // Time out after a week
 export const ROOM_TIMEOUT = 1000 * 60 * 60 * 24 * 7;
 

@@ -1,9 +1,11 @@
+/// <reference path="../types/human-readable-ids.d.ts" />
 import {
     Recommendations,
     SpotifyRecommendations,
 } from './spotify-recommendations';
-import { ROOM_ID_LENGTH, ROOM_TIMEOUT, USER_ID_LENGTH } from './constants';
 import { WebsocketMessage, UpdateMessageData } from '../../shared/ws';
+import { ROOM_TIMEOUT, USER_ID_LENGTH } from './constants';
+import { humanReadableIds } from 'human-readable-ids';
 import { SpotifyTypes } from '../types/spotify';
 import { Spotify } from './spotify';
 import * as express from 'express';
@@ -135,7 +137,7 @@ export class Room {
     > = new Map();
 
     private _generateID() {
-        return Util.randomString(ROOM_ID_LENGTH);
+        return humanReadableIds.random();
     }
 
     private _setDestroyTimeout() {
