@@ -1,12 +1,26 @@
 import * as path from "path";
 import { IO } from "./io";
 
+/**
+ * Options that can change
+ */
 export const NAME = "Sharify";
+// If true, strive to fill SPOTIFY_RECOMMENDATIONS_AMOUNT up
+// if false, try to get the best we can and let spotify's
+// recommendations handle the rest
+export const HARD_RECOMMENDATIONS_LIMIT = false;
 
+
+/**
+ * Room options that are unlikely to change
+ */
 export const ROOM_ID_LENGTH = 32;
 // Time out after a week
 export const ROOM_TIMEOUT = 1000 * 60 * 60 * 24 * 7;
 
+/**
+ * API options that are unlikely to change
+ */
 export const SPOTIFY_PEER_SCOPES = ["user-read-email", "user-top-read"];
 export const SPOTIFY_HOST_SCOPES = [
     ...SPOTIFY_PEER_SCOPES,
@@ -22,12 +36,24 @@ export const SPOTIFY_SECRETS_FILE = path.join(
 export const COOKIE_SECRETS_FILE = path.join(
     SECRET_DIR, "cookie.js"
 );
+
+/**
+ * Hosting options that are unlikely to change
+ */
 export const FRONTEND_PORT = 3000;
 export const HOST_URL = IO.get().host || `http://localhost:${IO.get().port}`;
 export const FRONTEND_URL = IO.get().host || `http://localhost:${FRONTEND_PORT}`;
 export const REDIRECT_PATH = "/api/permission_callback";
+
+/**
+ * Recommendations options that are unlikely to change
+ */
 export const DEFAULT_TOP_LIMIT = 100;
 export const DEFAULT_TOP_TIME_RANGE = "medium_term";
+// Generate at least this many recommendations before
+// passing control to spotify's recommendations algorithm
+// if HARD_RECOMMENDATIONS_LIMIT is true
+export const MIN_RECOMMENDATIONS = 10;
 export const SPOTIFY_RECOMMENDATIONS_AMOUNT = 100;
 export const GENRE_TRACK_LIMIT = 20;
 export const ARTIST_TRACK_LIMIT = 10;

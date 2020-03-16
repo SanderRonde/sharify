@@ -6,6 +6,8 @@ import {
     GENRE_TRACK_LIMIT,
     ARTIST_TRACK_LIMIT,
     TRACK_TRACK_LIMIT,
+    HARD_RECOMMENDATIONS_LIMIT,
+    MIN_RECOMMENDATIONS,
 } from './constants';
 import { SpotifyTypes } from '../types/spotify';
 import { RoomMember, Room } from './rooms';
@@ -144,7 +146,9 @@ export class UserRecommendations {
                     type,
                     track: name,
                     id,
-                    fullName: `${artists.map(a => a.name).join(' & ')} - ${name}`,
+                    fullName: `${artists
+                        .map((a) => a.name)
+                        .join(' & ')} - ${name}`,
                     ranking: index,
                     occurences: 1,
                 };
@@ -258,7 +262,7 @@ export class Recommendations {
     private _notifyChanges() {
         this._room.notifyUpdate({
             playlistID: true,
-            statistics: true
+            statistics: true,
         });
     }
 
@@ -396,7 +400,7 @@ export class Recommendations {
 
         this.statistics.trackOverlap = trackOverlap.map((track) => ({
             name: track.fullName,
-            amount: track.occurences
+            amount: track.occurences,
         }));
 
         let recommendations: TrackRecommendation[] = [
@@ -427,7 +431,7 @@ export class Recommendations {
 
         this.statistics.artistOverlap = artistOverlap.map((artist) => ({
             name: artist.artist,
-            amount: artist.occurences
+            amount: artist.occurences,
         }));
 
         // Check for overlapping genres
@@ -444,7 +448,7 @@ export class Recommendations {
 
         this.statistics.genreOverlap = genreOverlap.map((genre) => ({
             name: genre.genre,
-            amount: genre.occurences
+            amount: genre.occurences,
         }));
 
         // Fetch based on overlapping values
@@ -603,7 +607,10 @@ export class Recommendations {
         this._members.push(
             await SpotifyRecommendations.createUserRecommendations(member)
         );
-        await this._updateRecommendations(SPOTIFY_RECOMMENDATIONS_AMOUNT);
+        const recommendationAmount = HARD_RECOMMENDATIONS_LIMIT
+            ? SPOTIFY_RECOMMENDATIONS_AMOUNT
+            : MIN_RECOMMENDATIONS;
+        await this._updateRecommendations(recommendationAmount);
     }
 }
 
