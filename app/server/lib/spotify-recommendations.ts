@@ -398,9 +398,44 @@ export class Recommendations {
             trackOverlap.map((t) => t.track).join(', ')
         );
 
+        // Check if there are overlapping artists
+        const artistOverlap = this._getOverlap(artists);
+        config.seed_artists = [
+            ...(config.seed_artists || []),
+            ...artistOverlap.map((t) => t.id),
+        ];
+
+        Util.devLog(
+            'Artist overlap:\n',
+            artistOverlap.map((a) => a.artist).join(', ')
+        );
+
+        // Check for overlapping genres
+        const genreOverlap = this._getOverlap(genres);
+        config.seed_genres = [
+            ...(config.seed_genres || []),
+            ...genreOverlap.map((t) => t.genre),
+        ];
+
+        Util.devLog(
+            'Genre overlap:\n',
+            genreOverlap.map((g) => g.genre).join(', ')
+        );
+
+        // Generate and store statistics
         this.statistics.trackOverlap = trackOverlap.map((track) => ({
             name: track.fullName,
             amount: track.occurences,
+        }));
+
+        this.statistics.artistOverlap = artistOverlap.map((artist) => ({
+            name: artist.artist,
+            amount: artist.occurences,
+        }));
+
+        this.statistics.genreOverlap = genreOverlap.map((genre) => ({
+            name: genre.genre,
+            amount: genre.occurences,
         }));
 
         let recommendations: TrackRecommendation[] = [
@@ -416,40 +451,6 @@ export class Recommendations {
         if (recommendations.length >= amount) {
             return recommendations.slice(0, amount);
         }
-
-        // Check if there are overlapping artists
-        const artistOverlap = this._getOverlap(artists);
-        config.seed_artists = [
-            ...(config.seed_artists || []),
-            ...artistOverlap.map((t) => t.id),
-        ];
-
-        Util.devLog(
-            'Artist overlap:\n',
-            artistOverlap.map((a) => a.artist).join(', ')
-        );
-
-        this.statistics.artistOverlap = artistOverlap.map((artist) => ({
-            name: artist.artist,
-            amount: artist.occurences,
-        }));
-
-        // Check for overlapping genres
-        const genreOverlap = this._getOverlap(genres);
-        config.seed_genres = [
-            ...(config.seed_genres || []),
-            ...genreOverlap.map((t) => t.genre),
-        ];
-
-        Util.devLog(
-            'Genre overlap:\n',
-            genreOverlap.map((g) => g.genre).join(', ')
-        );
-
-        this.statistics.genreOverlap = genreOverlap.map((genre) => ({
-            name: genre.genre,
-            amount: genre.occurences,
-        }));
 
         // Fetch based on overlapping values
         if (
