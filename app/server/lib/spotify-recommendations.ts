@@ -6,11 +6,11 @@ import {
     GENRE_TRACK_LIMIT,
     ARTIST_TRACK_LIMIT,
     TRACK_TRACK_LIMIT,
-} from "./constants";
-import { SpotifyTypes } from "../types/spotify";
-import { RoomMember, Room } from "./rooms";
-import { Util } from "./util";
-import { RecommendationConfig } from "./spotify-endpoints";
+} from './constants';
+import { SpotifyTypes } from '../types/spotify';
+import { RoomMember, Room } from './rooms';
+import { Util } from './util';
+import { RecommendationConfig } from './spotify-endpoints';
 
 interface RecommendationGroupBase {
     ranking: number;
@@ -19,17 +19,17 @@ interface RecommendationGroupBase {
 }
 
 interface ArtistRecommendationGroup extends RecommendationGroupBase {
-    type: "artist";
+    type: 'artist';
     artist: string;
 }
 
 interface TrackRecommendationGroup extends RecommendationGroupBase {
-    type: "track";
+    type: 'track';
     track: string;
 }
 
 interface GenreRecommendationGroup extends RecommendationGroupBase {
-    type: "genre";
+    type: 'genre';
     genre: string;
 }
 
@@ -55,23 +55,23 @@ export class UserRecommendations {
         const [tracks, artists] = await Promise.all(
             Util.isDev()
                 ? [
-                      this.user.api.endpoints.top("tracks", {
+                      this.user.api.endpoints.top('tracks', {
                           limit: 10,
                           offset: Math.round(Math.random() * 40),
                           time_range: DEFAULT_TOP_TIME_RANGE,
                       }),
-                      this.user.api.endpoints.top("artists", {
+                      this.user.api.endpoints.top('artists', {
                           limit: 10,
                           offset: Math.round(Math.random() * 40),
                           time_range: DEFAULT_TOP_TIME_RANGE,
                       }),
                   ]
                 : [
-                      this.user.api.endpoints.top("tracks", {
+                      this.user.api.endpoints.top('tracks', {
                           limit: DEFAULT_TOP_LIMIT,
                           time_range: DEFAULT_TOP_TIME_RANGE,
                       }),
-                      this.user.api.endpoints.top("artists", {
+                      this.user.api.endpoints.top('artists', {
                           limit: DEFAULT_TOP_LIMIT,
                           time_range: DEFAULT_TOP_TIME_RANGE,
                       }),
@@ -165,7 +165,7 @@ export class UserRecommendations {
             track.artists.forEach((artist) => {
                 // New artist
                 trackArtists.push({
-                    type: "artist",
+                    type: 'artist',
                     artist: artist.name,
                     id: artist.id,
                     occurences: 1,
@@ -178,7 +178,7 @@ export class UserRecommendations {
         this.topArtists.forEach((topArtist) => {
             topArtist.genres.forEach((genre) => {
                 genres.push({
-                    type: "genre",
+                    type: 'genre',
                     genre: genre,
                     id: genre,
                     occurences: 1,
@@ -201,7 +201,7 @@ export class UserRecommendations {
             trackArtistDetail.forEach((artist) => {
                 artist.genres.forEach((genre) => {
                     genres.push({
-                        type: "genre",
+                        type: 'genre',
                         occurences: 1,
                         id: genre,
                         ranking: trackArtistGenreRanking,
@@ -218,7 +218,9 @@ export class UserRecommendations {
             ),
             ...this._sortByRanking(
                 UserRecommendations.joinDuplicates(
-                    genres.map(this._mapGenre).filter(v => !!v) as GenreRecommendationGroup[]
+                    genres
+                        .map(this._mapGenre)
+                        .filter((v) => !!v) as GenreRecommendationGroup[]
                 )
             )
         );
@@ -238,6 +240,15 @@ export class Recommendations {
         id: string;
         lastRecommendations: TrackRecommendation[];
     } | null = null;
+    public statistics: {
+        trackOverlap: string[];
+        artistOverlap: string[];
+        genreOverlap: string[];
+    } = {
+        trackOverlap: [],
+        artistOverlap: [],
+        genreOverlap: [],
+    };
 
     constructor(private _room: Room) {}
 
@@ -247,7 +258,8 @@ export class Recommendations {
 
     private _notifyChanges() {
         this._room.notifyUpdate({
-            playlistID: true
+            playlistID: true,
+            statistics: true
         });
     }
 
@@ -358,17 +370,17 @@ export class Recommendations {
 
         const artists = (this._members.map((member) => {
             return member.groups.filter((item) => {
-                return item.type === "artist";
+                return item.type === 'artist';
             });
         }) as unknown) as ArtistRecommendationGroup[][];
         const tracks = (this._members.map((member) => {
             return member.groups.filter((item) => {
-                return item.type === "track";
+                return item.type === 'track';
             });
         }) as unknown) as TrackRecommendationGroup[][];
         const genres = (this._members.map((member) => {
             return member.groups.filter((item) => {
-                return item.type === "genre";
+                return item.type === 'genre';
             });
         }) as unknown) as GenreRecommendationGroup[][];
 
@@ -379,19 +391,11 @@ export class Recommendations {
             ...trackOverlap.map((t) => t.id),
         ];
         Util.devLog(
-            "Track overlap:\n",
-            trackOverlap.map((t) => t.track).join(", ")
+            'Track overlap:\n',
+            trackOverlap.map((t) => t.track).join(', ')
         );
 
-        var fs = require("fs");
-        // fs.writeFile("./vis_json/tracks.json", JSON.stringify(this._getOverlap(tracks), null, 4), (err: any) => {
-        fs.writeFile("./../client/src/components/vis_json/tracks.json", JSON.stringify(this._getOverlap(tracks), null, 4), (err: any) => {
-            if (err) {
-                console.error(err);
-                return;
-            };
-            console.log("File has been created");
-        });
+        this.statistics.trackOverlap = trackOverlap.map((a) => a.track);
 
         let recommendations: TrackRecommendation[] = [
             // Overlapping tracks
@@ -415,19 +419,11 @@ export class Recommendations {
         ];
 
         Util.devLog(
-            "Artist overlap:\n",
-            artistOverlap.map((a) => a.artist).join(", ")
+            'Artist overlap:\n',
+            artistOverlap.map((a) => a.artist).join(', ')
         );
 
-        // fs.writeFile("./vis_json/artists.json", JSON.stringify(this._getOverlap(artists), null, 4), (err: any) => {
-        fs.writeFile("./../client/src/components/vis_json/artists.json", JSON.stringify(this._getOverlap(artists), null, 4), (err: any) => {
-            if (err) {
-                console.error(err);
-                return;
-            };
-            console.log("File has been created");
-        });
-        
+        this.statistics.artistOverlap = artistOverlap.map((a) => a.artist);
 
         // Check for overlapping genres
         const genreOverlap = this._getOverlap(genres);
@@ -437,18 +433,11 @@ export class Recommendations {
         ];
 
         Util.devLog(
-            "Genre overlap:\n",
-            genreOverlap.map((g) => g.genre).join(", ")
+            'Genre overlap:\n',
+            genreOverlap.map((g) => g.genre).join(', ')
         );
 
-        // fs.writeFile("./vis_json/genres.json", JSON.stringify(this._getOverlap(genres), null, 4), (err: any) => {
-        fs.writeFile("./../client/src/components/vis_json/genres.json", JSON.stringify(this._getOverlap(genres), null, 4), (err: any) => {
-            if (err) {
-                console.error(err);
-                return;
-            };
-            console.log("File has been created");
-        });
+        this.statistics.genreOverlap = genreOverlap.map((a) => a.genre);
 
         // Fetch based on overlapping values
         if (
@@ -478,8 +467,8 @@ export class Recommendations {
         ];
 
         Util.devLog(
-            "Joined tracks:\n",
-            joinedTracks.map((t) => t.track).join(", ")
+            'Joined tracks:\n',
+            joinedTracks.map((t) => t.track).join(', ')
         );
 
         const joinedArtists = this._getJoined(artists);
@@ -489,8 +478,8 @@ export class Recommendations {
         ];
 
         Util.devLog(
-            "Joined artists:\n",
-            joinedArtists.map((a) => a.artist).join(", ")
+            'Joined artists:\n',
+            joinedArtists.map((a) => a.artist).join(', ')
         );
 
         const joinedGenres = this._getJoined(genres);
@@ -500,8 +489,8 @@ export class Recommendations {
         ];
 
         Util.devLog(
-            "Joined genres:\n",
-            joinedGenres.map((g) => g.genre).join(", ")
+            'Joined genres:\n',
+            joinedGenres.map((g) => g.genre).join(', ')
         );
 
         if (this.api) {
@@ -522,7 +511,7 @@ export class Recommendations {
         if (names.length === 1) {
             return names[0];
         }
-        return `${names.slice(0, -1).join(", ")} and ${names.slice(-1)[0]}`;
+        return `${names.slice(0, -1).join(', ')} and ${names.slice(-1)[0]}`;
     }
 
     private async _createPlaylist() {

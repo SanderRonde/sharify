@@ -14,6 +14,11 @@ export type FailableMessage<T, B> =
 export interface UpdateMessageData {
     members?: RoomMember[];
     playlistID?: string;
+    statistics?: {
+        artistOverlap: string[];
+        genreOverlap: string[];
+        trackOverlap: string[];
+    }
 }
 
 export type WebsocketMessage =

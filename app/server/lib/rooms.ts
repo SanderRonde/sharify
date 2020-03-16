@@ -251,6 +251,7 @@ export class Room {
                     image: member.info.image
                 };
             }),
+            statistics: this.recommendations.statistics
         };
 
         if (subset === null) return fullData;
