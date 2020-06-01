@@ -1,6 +1,8 @@
 # Sharify
 Matchmaking system for multiple Spotify users to create a list which has songs based on similar interests
 
+Check it out at [sharify.sanderron.de](https://sharify.sanderron.de)
+
 ## Running
 
 * Install [nodejs](https://nodejs.org/en/) or better yet [yarn](https://yarnpkg.com/)
