@@ -7,7 +7,7 @@
 	"license": "MIT",
 	"nodemonConfig": {
 		"ext": "js",
-		"exec": "node app.js --port 1234",
+		"exec": "node app.js --port 3000",
 		"watch": [
 			"./"
 		]
