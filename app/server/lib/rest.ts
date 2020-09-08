@@ -112,7 +112,11 @@ export namespace Rest {
         return true;
     }
 
-    function getTargetFromPost(req: express.Request, res: express.Response, room: Room) {
+    function getTargetFromPost(
+        req: express.Request,
+        res: express.Response,
+        room: Room
+    ) {
         const targetUserID = req.body['userID'];
         const targetUser = targetUserID
             ? Rooms.getMemberById(room, targetUserID)
@@ -132,7 +136,7 @@ export namespace Rest {
 
     /**
      * Params:
-     * 
+     *
      * {string} room - The ID of the room this is about
      * {string} userID - The ID of the target
      * {boolean} status - The target admin status of the user
@@ -169,7 +173,7 @@ export namespace Rest {
 
     /**
      * Params:
-     * 
+     *
      * {string} room - The ID of the room this is about
      * {string} userID - The ID of the target
      */
@@ -190,7 +194,7 @@ export namespace Rest {
         res.status(200);
         res.send({
             success: true,
-            kicked: kicked
+            kicked: kicked,
         });
     }
 }

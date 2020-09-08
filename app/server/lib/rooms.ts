@@ -17,7 +17,7 @@ export interface UserInfo {
     name: string;
     email: string;
     id: string;
-    image: string|null;
+    image: string | null;
 }
 
 export class RoomMember {
@@ -57,14 +57,14 @@ export class RoomMember {
                 email: '?',
                 id: '?',
                 name: '?',
-                image: null
+                image: null,
             };
         const { display_name, email, id, images = [] } = await response.json();
         return {
             name: display_name,
             email,
             id,
-            image: images.length ? images[0].url : null
+            image: images.length ? images[0].url : null,
         };
     }
 
@@ -88,7 +88,7 @@ export class RoomMember {
         }
 
         this.room.notifyUpdate({
-            members: true
+            members: true,
         });
     }
 
@@ -102,7 +102,7 @@ export class RoomMember {
         this.room.banned.add(this.info.email);
 
         this.room.notifyUpdate({
-            members: true
+            members: true,
         });
         return true;
     }
@@ -194,9 +194,22 @@ export class Room {
     public async addMember(
         authData: SpotifyTypes.Endpoints.AuthToken,
         isHost: boolean
-    ) {
+    ): Promise<
+        | {
+              success: false;
+              reason: string;
+          }
+        | {
+              success: true;
+              member: RoomMember;
+          }
+    > {
         const member = await new RoomMember(this, authData).init();
-        if (this.banned.has(member.info.email)) return null;
+        if (this.banned.has(member.info.email))
+            return {
+                success: false,
+                reason: 'Banned from room',
+            };
 
         this.members.push(member);
         if (isHost) {
@@ -210,7 +223,11 @@ export class Room {
 
         // If the user was a duplicate and was filtered out,
         // don't notify others
-        if (this.members.indexOf(member) == -1) return null;
+        if (this.members.indexOf(member) == -1)
+            return {
+                success: false,
+                reason: 'Already in room',
+            };
 
         // Notify of member join
         this.notifyUpdate({
@@ -221,7 +238,10 @@ export class Room {
         // in the background
         this.recommendations.addMember(member);
 
-        return member;
+        return {
+            success: true,
+            member,
+        };
     }
 
     public subscribe(
@@ -250,14 +270,17 @@ export class Room {
                     isMe: callingMember === member,
                     name: member.info.name,
                     email: member.info.email,
-                    image: member.info.image
+                    image: member.info.image,
                 };
             }),
-            statistics: this.recommendations.statistics
+            statistics: this.recommendations.statistics,
         };
 
         if (subset === null) return fullData;
-        return Util.pick(fullData, Object.keys(subset) as (keyof UpdateMessageData)[]);
+        return Util.pick(
+            fullData,
+            Object.keys(subset) as (keyof UpdateMessageData)[]
+        );
     }
 
     public unsubscribe(identifier: any) {
@@ -319,11 +342,11 @@ export namespace Rooms {
         const room = Rooms.getFromNav(roomID, res);
         if (room) {
             const result = await room.addMember(authData, isHost);
-            if (result === null) {
-                res.redirect('/404');
+            if (!result.success) {
+                res.redirect(`/500/${encodeURIComponent(result.reason)}`);
                 return;
             }
-            return result;
+            return result.member;
         }
         return null;
     }
