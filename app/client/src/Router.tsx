@@ -17,7 +17,7 @@ export default class AppRouter extends React.Component {
                     <Route path="/room/:roomID">
                         <RoomWrapper />
                     </Route>
-                    <Route path="/500">
+                    <Route path="/500/:reason?">
                         <FiveHundred />
                     </Route>
                     <Route path="/rejected/:url">
