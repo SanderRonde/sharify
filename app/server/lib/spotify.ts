@@ -244,6 +244,19 @@ export namespace Spotify {
                 return this._postLike("post", path, data, options);
             }
 
+            put<R>(
+                path: string,
+                data: string,
+                options: {
+                    headers?: {
+                        [key: string]: string;
+                    };
+                    base?: string;
+                } = {}
+            ): Promise<ExtendedResponse<R> | null> {
+                return this._postLike("put", path, data, options);
+            }
+
             delete<R>(
                 path: string,
                 data: string,

@@ -8,12 +8,12 @@ import {
     TRACK_TRACK_LIMIT,
     HARD_RECOMMENDATIONS_LIMIT,
     MIN_RECOMMENDATIONS,
-} from './constants';
-import { SpotifyTypes } from '../types/spotify';
-import { RoomMember, Room } from './rooms';
-import { Util } from './util';
-import { RecommendationConfig } from './spotify-endpoints';
-import { StatisticsData } from '../../shared/ws';
+} from "./constants";
+import { SpotifyTypes } from "../types/spotify";
+import { RoomMember, Room } from "./rooms";
+import { Util } from "./util";
+import { RecommendationConfig } from "./spotify-endpoints";
+import { StatisticsData } from "../../shared/ws";
 
 interface RecommendationGroupBase {
     ranking: number;
@@ -23,18 +23,18 @@ interface RecommendationGroupBase {
 }
 
 interface ArtistRecommendationGroup extends RecommendationGroupBase {
-    type: 'artist';
+    type: "artist";
     artist: string;
 }
 
 interface TrackRecommendationGroup extends RecommendationGroupBase {
-    type: 'track';
+    type: "track";
     fullName: string;
     track: string;
 }
 
 interface GenreRecommendationGroup extends RecommendationGroupBase {
-    type: 'genre';
+    type: "genre";
     genre: string;
     trackNames: string[];
     artistNames: string[];
@@ -62,23 +62,23 @@ export class UserRecommendations {
         const [tracks, artists] = await Promise.all(
             Util.isDev()
                 ? [
-                      this.user.api.endpoints.top('tracks', {
+                      this.user.api.endpoints.top("tracks", {
                           limit: 10,
                           offset: Math.round(Math.random() * 40),
                           time_range: DEFAULT_TOP_TIME_RANGE,
                       }),
-                      this.user.api.endpoints.top('artists', {
+                      this.user.api.endpoints.top("artists", {
                           limit: 10,
                           offset: Math.round(Math.random() * 40),
                           time_range: DEFAULT_TOP_TIME_RANGE,
                       }),
                   ]
                 : [
-                      this.user.api.endpoints.top('tracks', {
+                      this.user.api.endpoints.top("tracks", {
                           limit: DEFAULT_TOP_LIMIT,
                           time_range: DEFAULT_TOP_TIME_RANGE,
                       }),
-                      this.user.api.endpoints.top('artists', {
+                      this.user.api.endpoints.top("artists", {
                           limit: DEFAULT_TOP_LIMIT,
                           time_range: DEFAULT_TOP_TIME_RANGE,
                       }),
@@ -118,8 +118,9 @@ export class UserRecommendations {
                     sortedMatch.occurences++;
                     sorted.splice(i, 1);
 
-                    if (sortedMatch.type === 'genre') {
-                        const genreMatch = sortedMatch as GenreRecommendationGroup;
+                    if (sortedMatch.type === "genre") {
+                        const genreMatch =
+                            sortedMatch as GenreRecommendationGroup;
                         const genreValue = value as GenreRecommendationGroup;
                         genreMatch.trackNames = [
                             ...(genreMatch.trackNames || []),
@@ -156,7 +157,7 @@ export class UserRecommendations {
     }
 
     private _trackFullName({ artists, name }: SpotifyTypes.Track) {
-        return `${artists.map((a) => a.name).join(' & ')} - ${name}`;
+        return `${artists.map((a) => a.name).join(" & ")} - ${name}`;
     }
 
     private async _createRecommendationGroups() {
@@ -191,7 +192,7 @@ export class UserRecommendations {
             track.artists.forEach((artist) => {
                 // New artist
                 trackArtists.push({
-                    type: 'artist',
+                    type: "artist",
                     artist: artist.name,
                     id: artist.id,
                     occurences: 1,
@@ -204,7 +205,7 @@ export class UserRecommendations {
         this.topArtists.forEach((topArtist) => {
             topArtist.genres.forEach((genre) => {
                 genres.push({
-                    type: 'genre',
+                    type: "genre",
                     genre: genre,
                     id: genre,
                     occurences: 1,
@@ -223,9 +224,8 @@ export class UserRecommendations {
             trackArtistIDs
         );
         if (trackArtistDetailReq) {
-            const {
-                artists: trackArtistDetail,
-            } = await trackArtistDetailReq.json();
+            const { artists: trackArtistDetail } =
+                await trackArtistDetailReq.json();
             trackArtistDetail.forEach((artist) => {
                 artist.genres.forEach((genre) => {
                     // Find the track that this artist belongs to
@@ -236,7 +236,7 @@ export class UserRecommendations {
                     });
 
                     genres.push({
-                        type: 'genre',
+                        type: "genre",
                         occurences: 1,
                         id: genre,
                         ranking: trackArtistGenreRanking,
@@ -277,6 +277,8 @@ export class Recommendations {
     public recommendations: TrackRecommendation[] = [];
     public playlist: {
         id: string;
+        collaborative: boolean;
+        public: boolean;
         lastRecommendations: TrackRecommendation[];
     } | null = null;
     public statistics: StatisticsData = {
@@ -403,21 +405,21 @@ export class Recommendations {
     private async _getRecommendations(amount: number) {
         const config: RecommendationConfig = {};
 
-        const artists = (this._members.map((member) => {
+        const artists = this._members.map((member) => {
             return member.groups.filter((item) => {
-                return item.type === 'artist';
+                return item.type === "artist";
             });
-        }) as unknown) as ArtistRecommendationGroup[][];
-        const tracks = (this._members.map((member) => {
+        }) as unknown as ArtistRecommendationGroup[][];
+        const tracks = this._members.map((member) => {
             return member.groups.filter((item) => {
-                return item.type === 'track';
+                return item.type === "track";
             });
-        }) as unknown) as TrackRecommendationGroup[][];
-        const genres = (this._members.map((member) => {
+        }) as unknown as TrackRecommendationGroup[][];
+        const genres = this._members.map((member) => {
             return member.groups.filter((item) => {
-                return item.type === 'genre';
+                return item.type === "genre";
             });
-        }) as unknown) as GenreRecommendationGroup[][];
+        }) as unknown as GenreRecommendationGroup[][];
 
         // Check if there are overlapping tracks
         const trackOverlap = this._getOverlap(tracks);
@@ -426,8 +428,8 @@ export class Recommendations {
             ...trackOverlap.map((t) => t.id),
         ];
         Util.devLog(
-            'Track overlap:\n',
-            trackOverlap.map((t) => t.track).join(', ')
+            "Track overlap:\n",
+            trackOverlap.map((t) => t.track).join(", ")
         );
 
         // Check if there are overlapping artists
@@ -438,8 +440,8 @@ export class Recommendations {
         ];
 
         Util.devLog(
-            'Artist overlap:\n',
-            artistOverlap.map((a) => a.artist).join(', ')
+            "Artist overlap:\n",
+            artistOverlap.map((a) => a.artist).join(", ")
         );
 
         // Check for overlapping genres
@@ -450,8 +452,8 @@ export class Recommendations {
         ];
 
         Util.devLog(
-            'Genre overlap:\n',
-            genreOverlap.map((g) => g.genre).join(', ')
+            "Genre overlap:\n",
+            genreOverlap.map((g) => g.genre).join(", ")
         );
 
         // Generate and store statistics
@@ -470,8 +472,8 @@ export class Recommendations {
             amount: genre.occurences,
             genreData: {
                 artists: genre.artistNames,
-                tracks: genre.trackNames
-            }
+                tracks: genre.trackNames,
+            },
         }));
 
         let recommendations: TrackRecommendation[] = [
@@ -516,8 +518,8 @@ export class Recommendations {
         ];
 
         Util.devLog(
-            'Joined tracks:\n',
-            joinedTracks.map((t) => t.track).join(', ')
+            "Joined tracks:\n",
+            joinedTracks.map((t) => t.track).join(", ")
         );
 
         const joinedArtists = this._getJoined(artists);
@@ -527,8 +529,8 @@ export class Recommendations {
         ];
 
         Util.devLog(
-            'Joined artists:\n',
-            joinedArtists.map((a) => a.artist).join(', ')
+            "Joined artists:\n",
+            joinedArtists.map((a) => a.artist).join(", ")
         );
 
         const joinedGenres = this._getJoined(genres);
@@ -538,8 +540,8 @@ export class Recommendations {
         ];
 
         Util.devLog(
-            'Joined genres:\n',
-            joinedGenres.map((g) => g.genre).join(', ')
+            "Joined genres:\n",
+            joinedGenres.map((g) => g.genre).join(", ")
         );
 
         if (this.api) {
@@ -560,20 +562,36 @@ export class Recommendations {
         if (names.length === 1) {
             return names[0];
         }
-        return `${names.slice(0, -1).join(', ')} and ${names.slice(-1)[0]}`;
+        return `${names.slice(0, -1).join(", ")} and ${names.slice(-1)[0]}`;
+    }
+
+    private async _updatePlaylist() {
+        if (!this.api || !this.playlist) return;
+        // Create playlist
+        await this.api.endpoints.updatePlaylistMeta(
+            this.playlist.id,
+            `Sharify with ${this._formatMemberNames()}`,
+            {
+                description: `Sharify playlist generated on ${new Date().toLocaleDateString()} with ${this._formatMemberNames()}`,
+                isCollaborative: this.playlist.collaborative,
+                isPublic: this.playlist.public,
+            }
+        );
     }
 
     private async _createPlaylist() {
         // TODO: look at whether playlists update instantly-ish
         if (!this.api) return null;
         // Create playlist
+        const isCollaborative = true;
+        const isPublic = false;
         const playlistResponse = await this.api.endpoints.createPlaylist(
-            `Sharify ${new Date().toLocaleString()}`,
+            `Sharify with ${this._formatMemberNames()}`,
             {
                 description: `Sharify playlist generated on ${new Date().toLocaleDateString()} with ${this._formatMemberNames()}`,
                 // TODO: this may become an option for the user
-                isCollaborative: true,
-                isPublic: false,
+                isCollaborative,
+                isPublic,
             }
         );
         if (!playlistResponse) return null;
@@ -583,6 +601,8 @@ export class Recommendations {
         this.playlist = {
             id: playlist.id,
             lastRecommendations: [],
+            collaborative: isCollaborative,
+            public: isPublic,
         };
         return this.playlist;
     }
@@ -614,6 +634,7 @@ export class Recommendations {
             if (!(await this._createPlaylist())) return null;
         } else {
             if (!(await this._clearPlaylist())) return null;
+            await this._updatePlaylist();
         }
 
         // Add tracks to playlist
@@ -648,6 +669,10 @@ export class Recommendations {
             ? SPOTIFY_RECOMMENDATIONS_AMOUNT
             : MIN_RECOMMENDATIONS;
         await this._updateRecommendations(recommendationAmount);
+        member.notifyMember({
+            type: "notifyPlaylistCreated",
+            data: {},
+        });
     }
 }
 

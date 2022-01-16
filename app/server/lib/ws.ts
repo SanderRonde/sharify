@@ -30,7 +30,10 @@ export namespace WS {
                 // Do nothing
             }
         }
-        room.subscribe(ws, activeMember, (message) => {
+        room.subscribe(activeMember, (message) => {
+            ws.send(JSON.stringify(message));
+        });
+        activeMember.subscribe((message) => {
             ws.send(JSON.stringify(message));
         });
         const msg = {

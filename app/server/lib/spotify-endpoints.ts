@@ -157,6 +157,23 @@ export namespace SpotifyEndpoints {
 				description
 			}));
         }
+
+        updatePlaylistMeta(playlistId: string, name: string, {
+			description,
+			isCollaborative, 
+			isPublic
+		}: {
+			isPublic?: boolean;
+			isCollaborative?: boolean;
+			description?: string;
+		} = {}) {
+			return this.api.put<SpotifyTypes.Endpoints.CreatePlaylist>(`/v1/users/${this.api.id}/playlists/${playlistId}`, JSON.stringify({
+				name: name,
+				public: isPublic,
+				collaborative: isCollaborative,
+				description
+			}));
+        }
         
         private _splitIntoGroups<V>(value: V[], maxLength: number): V[][] {
             const groups: V[][] = [];

@@ -11,13 +11,18 @@ export type FailableMessage<T, B> =
           success: true;
       } & B);
 
+export interface UpdateMessage<T, D> {
+    type: T;
+    data: D;
+}
+
 export interface StatisticPoint {
     name: string;
     amount: number;
     genreData?: {
         artists: string[];
         tracks: string[];
-    }
+    };
 }
 
 export interface StatisticsData {
@@ -33,8 +38,9 @@ export interface UpdateMessageData {
 }
 
 export type WebsocketMessage =
-    | FailableMessage<'update', UpdateMessageData>
-    | ErrorMessage<'connect'>;
+    | FailableMessage<"update", UpdateMessageData>
+    | ErrorMessage<"connect">
+    | UpdateMessage<"notifyPlaylistCreated", {}>;
 
 export interface RoomMember {
     id: string;

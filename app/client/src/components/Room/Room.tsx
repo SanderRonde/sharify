@@ -56,6 +56,11 @@ class Room extends React.Component<
                     });
                 }
                 break;
+            case 'notifyPlaylistCreated':
+                notification.open({
+                    message: 'Playlist created',
+                    description: 'A new collaborative playlist has been created',
+                });
         }
     }
 

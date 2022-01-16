@@ -2,14 +2,14 @@
 import {
     Recommendations,
     SpotifyRecommendations,
-} from './spotify-recommendations';
-import { WebsocketMessage, UpdateMessageData } from '../../shared/ws';
-import { ROOM_TIMEOUT, USER_ID_LENGTH } from './constants';
-import { humanReadableIds } from 'human-readable-ids';
-import { SpotifyTypes } from '../types/spotify';
-import { Spotify } from './spotify';
-import * as express from 'express';
-import { Util } from './util';
+} from "./spotify-recommendations";
+import { WebsocketMessage, UpdateMessageData } from "../../shared/ws";
+import { ROOM_TIMEOUT, USER_ID_LENGTH } from "./constants";
+import { humanReadableIds } from "human-readable-ids";
+import { SpotifyTypes } from "../types/spotify";
+import { Spotify } from "./spotify";
+import * as express from "express";
+import { Util } from "./util";
 
 const roomMap: Map<string, Room> = new Map();
 
@@ -22,6 +22,9 @@ export interface UserInfo {
 
 export class RoomMember {
     public api!: Spotify.API.APIInstance;
+    public notifiedOfPlaylist: boolean = false;
+
+    private _listeners: Set<WSListener> = new Set();
 
     // ID used to refer to this user
     public readonly internalID = (() => {
@@ -54,9 +57,9 @@ export class RoomMember {
         const response = await this.api.endpoints.me();
         if (!response)
             return {
-                email: '?',
-                id: '?',
-                name: '?',
+                email: "?",
+                id: "?",
+                name: "?",
                 image: null,
             };
         const { display_name, email, id, images = [] } = await response.json();
@@ -113,28 +116,34 @@ export class RoomMember {
             email: this.info.email,
         };
     }
+
+    public subscribe(listener: WSListener) {
+        this._listeners.add(listener);
+    }
+
+    public notifyMember(message: WebsocketMessage) {
+        this._listeners.forEach((listener) => {
+            listener(message);
+        });
+    }
 }
 
-type RoomListener = (message: WebsocketMessage) => void;
+type WSListener = (message: WebsocketMessage) => void;
 
 export class Room {
     public id: string;
     public members: RoomMember[] = [];
     public host: RoomMember | null = null;
     public admins: Set<RoomMember> = new Set();
-    public recommendations: Recommendations = SpotifyRecommendations.create(
-        this
-    );
+    public recommendations: Recommendations =
+        SpotifyRecommendations.create(this);
     public memberIDMap: Map<string, RoomMember> = new Map();
     public banned: Set<string> = new Set();
 
-    private _listeners: Map<
-        any,
-        {
-            listener: RoomListener;
-            member: RoomMember;
-        }
-    > = new Map();
+    private _listeners: Set<{
+        listener: WSListener;
+        member: RoomMember;
+    }> = new Set();
 
     private _generateID() {
         return humanReadableIds.random();
@@ -176,15 +185,13 @@ export class Room {
     }
 
     public notifyUpdate(
-        subset: Partial<
-            {
-                [P in keyof UpdateMessageData]: boolean;
-            }
-        > = {}
+        subset: Partial<{
+            [P in keyof UpdateMessageData]: boolean;
+        }> | null = null
     ) {
         this._listeners.forEach(({ listener, member }) => {
             listener({
-                type: 'update',
+                type: "update",
                 success: true,
                 ...this.getUpdateData(member, subset),
             });
@@ -208,7 +215,7 @@ export class Room {
         if (this.banned.has(member.info.email))
             return {
                 success: false,
-                reason: 'Banned from room',
+                reason: "Banned from room",
             };
 
         this.members.push(member);
@@ -226,7 +233,7 @@ export class Room {
         if (this.members.indexOf(member) == -1)
             return {
                 success: false,
-                reason: 'Already in room',
+                reason: "Already in room",
             };
 
         // Notify of member join
@@ -244,21 +251,15 @@ export class Room {
         };
     }
 
-    public subscribe(
-        identifier: any,
-        member: RoomMember,
-        listener: RoomListener
-    ) {
-        this._listeners.set(identifier, { listener, member });
+    public subscribe(member: RoomMember, listener: WSListener) {
+        this._listeners.add({ listener, member });
     }
 
     public getUpdateData(
         callingMember: RoomMember,
-        subset: Partial<
-            {
-                [P in keyof UpdateMessageData]: boolean;
-            }
-        > | null = null
+        subset: Partial<{
+            [P in keyof UpdateMessageData]: boolean;
+        }> | null = null
     ): Partial<UpdateMessageData> {
         const fullData: UpdateMessageData = {
             playlistID: this.recommendations.playlist?.id || undefined,
@@ -296,7 +297,7 @@ export namespace Rooms {
     export function getFromNav(id: string, res: express.Response): Room | null {
         const room = roomMap.get(id);
         if (!room && res) {
-            res.redirect('/404');
+            res.redirect("/404");
         }
         return room || null;
     }
@@ -320,8 +321,8 @@ export namespace Rooms {
 
         const userIDs = Buffer.from(
             req.signedCookies[room.id],
-            'base64'
-        ).toString('utf8');
+            "base64"
+        ).toString("utf8");
         const publicID = userIDs.slice(0, USER_ID_LENGTH);
         const secretID = userIDs.slice(USER_ID_LENGTH);
         if (!room.memberIDMap.has(publicID)) return null;
