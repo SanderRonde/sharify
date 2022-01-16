@@ -1,6 +1,6 @@
-import { AntdIconProps } from '@ant-design/icons/lib/components/AntdIcon';
-import Icon from '@ant-design/icons';
-import React from 'react';
+import { AntdIconProps } from "@ant-design/icons/lib/components/AntdIcon";
+import Icon from "@ant-design/icons";
+import React from "react";
 
 const StatsSvg = () => {
     return (

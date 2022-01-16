@@ -1,10 +1,10 @@
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
-import Rejected from './components/SingleMessagePages/Rejected/Rejected';
-import FiveHundred from './components/SingleMessagePages/500/500';
-import FourOFour from './components/SingleMessagePages/404/404';
-import Home from './components/SingleMessagePages/Home/Home';
-import RoomWrapper from './components/Room/Wrapper';
-import React from 'react';
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import Rejected from "./components/SingleMessagePages/Rejected/Rejected";
+import FiveHundred from "./components/SingleMessagePages/500/500";
+import FourOFour from "./components/SingleMessagePages/404/404";
+import Home from "./components/SingleMessagePages/Home/Home";
+import RoomWrapper from "./components/Room/Wrapper";
+import React from "react";
 
 export default class AppRouter extends React.Component {
     render() {

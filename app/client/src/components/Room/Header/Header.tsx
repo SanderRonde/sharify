@@ -1,10 +1,10 @@
-import StatisticsModal from './StatisticsModal/StatisticsModal';
-import { StatisticsData } from '../../../../../shared/ws';
-import StatsIcon from '../../shared/icons/Stats';
-import { Button, Tooltip } from 'antd';
-import styled from 'styled-components';
-import media from 'styled-media-query';
-import React from 'react';
+import StatisticsModal from "./StatisticsModal/StatisticsModal";
+import { StatisticsData } from "../../../../../shared/ws";
+import StatsIcon from "../../shared/icons/Stats";
+import { Button, Tooltip } from "antd";
+import styled from "styled-components";
+import media from "styled-media-query";
+import React from "react";
 
 const HeaderContainer = styled.div`
     display: flex;
@@ -20,7 +20,7 @@ const Logo = styled.img`
 `;
 
 const Title = styled.div`
-    ${media.lessThan('small')`
+    ${media.lessThan("small")`
 		display: none;
 	`}
     display: inline-block;
@@ -67,23 +67,23 @@ export default class Header extends React.Component<
                         </Tooltip>
                     </VerticalCenter>
                     <VerticalCenter>
-                        <Title>{'Sharify'}</Title>
+                        <Title>{"Sharify"}</Title>
                     </VerticalCenter>
 
                     <VerticalCenter>
                         <Tooltip title="Statistics">
                             <Button
                                 style={{
-                                    width: 'calc(54px + 2.8vmin)',
-                                    height: 'calc(54px + 2.8vmin)',
-                                    padding: 'calc(7.8px + 0.5vmin)',
+                                    width: "calc(54px + 2.8vmin)",
+                                    height: "calc(54px + 2.8vmin)",
+                                    padding: "calc(7.8px + 0.5vmin)",
                                 }}
                                 size="large"
                                 shape="circle-outline"
                                 icon={
                                     <StatsIcon
                                         style={{
-                                            fontSize: 'calc(30px + 1.4vmin)',
+                                            fontSize: "calc(30px + 1.4vmin)",
                                         }}
                                     />
                                 }

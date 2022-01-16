@@ -60,11 +60,8 @@ export namespace Spotify {
             ) {
                 if (response.status !== 200) return false;
 
-                const {
-                    access_token,
-                    refresh_token,
-                    expires_in,
-                } = await response.json();
+                const { access_token, refresh_token, expires_in } =
+                    await response.json();
 
                 this._accessToken = access_token;
                 this.setRefresh(refresh_token, expires_in);
@@ -73,25 +70,23 @@ export namespace Spotify {
             }
 
             async refreshToken() {
-                const {
-                    client_id,
-                    client_secret,
-                } = await Authentication.getSecrets();
-                const response = await this.post<
-                    SpotifyTypes.Endpoints.AuthToken
-                >(
-                    "/api/token",
-                    `grant_type=refresh_token&refresh_token=${this._refreshToken}`,
-                    {
-                        headers: {
-                            "Content-Type": "application/x-www-form-urlencoded",
-                            Authorization: `Basic ${Buffer.from(
-                                `${client_id}:${client_secret}`
-                            ).toString("base64")}`,
-                        },
-                        base: "https://accounts.spotify.com",
-                    }
-                );
+                const { client_id, client_secret } =
+                    await Authentication.getSecrets();
+                const response =
+                    await this.post<SpotifyTypes.Endpoints.AuthToken>(
+                        "/api/token",
+                        `grant_type=refresh_token&refresh_token=${this._refreshToken}`,
+                        {
+                            headers: {
+                                "Content-Type":
+                                    "application/x-www-form-urlencoded",
+                                Authorization: `Basic ${Buffer.from(
+                                    `${client_id}:${client_secret}`
+                                ).toString("base64")}`,
+                            },
+                            base: "https://accounts.spotify.com",
+                        }
+                    );
                 if (!response) return false;
                 return this._checkCreatedToken(response);
             }
@@ -141,9 +136,8 @@ export namespace Spotify {
                             }
                             return this.wrapRequest(path, request);
                         case 429:
-                            const retryAfter = response.headers.get(
-                                "Retry-After"
-                            );
+                            const retryAfter =
+                                response.headers.get("Retry-After");
                             await Util.wait(
                                 1000 * (parseInt(retryAfter || "60", 10) + 1)
                             );
@@ -214,8 +208,9 @@ export namespace Spotify {
                 } = {}
             ): Promise<ExtendedResponse<R> | null> {
                 return this.wrapRequest(path, async () => {
-                    const url = `${options.base ||
-                        APIInstance.SPOTIFY_BASE}${path}`;
+                    const url = `${
+                        options.base || APIInstance.SPOTIFY_BASE
+                    }${path}`;
                     const req = await fetch(url, {
                         method: method,
                         headers: {
@@ -322,11 +317,11 @@ export namespace Spotify {
         ) {
             const { error, code } = query;
             if (error) {
-                res.redirect('/rejected');
+                res.redirect("/rejected");
                 return null;
             }
             if (!code) {
-                res.redirect('/500');
+                res.redirect("/500");
                 return null;
             }
 
@@ -345,7 +340,7 @@ export namespace Spotify {
                 }
             )) as ExtendedResponse<SpotifyTypes.Endpoints.AuthToken>;
             if (!response) {
-                res.redirect('/500');
+                res.redirect("/500");
                 return null;
             }
             return response;

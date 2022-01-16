@@ -1,10 +1,10 @@
-import { UserOutlined, DeleteOutlined, CrownOutlined } from '@ant-design/icons';
-import theme from '../../../../../theme-override.json';
-import { Row, Card, Avatar, Tooltip, Spin } from 'antd';
+import { UserOutlined, DeleteOutlined, CrownOutlined } from "@ant-design/icons";
+import theme from "../../../../../theme-override.json";
+import { Row, Card, Avatar, Tooltip, Spin } from "antd";
 import { RoomMember } from "../../../../../../../shared/ws";
-import CrownedImage from './CrownedImage';
-import Meta from 'antd/lib/card/Meta';
-import React from 'react';
+import CrownedImage from "./CrownedImage";
+import Meta from "antd/lib/card/Meta";
+import React from "react";
 
 class Member extends React.Component<
     {
@@ -42,21 +42,21 @@ class Member extends React.Component<
     render() {
         let name = this.props.member.name;
         if (this.props.member.isHost) {
-            name += ' (host)';
+            name += " (host)";
         }
         if (this.props.member.isMe) {
-            name += ' (me)';
+            name += " (me)";
         }
         return (
-            <Row style={{ width: '100%' }}>
+            <Row style={{ width: "100%" }}>
                 <Spin
-                    wrapperClassName={'fullWidth'}
+                    wrapperClassName={"fullWidth"}
                     spinning={this.state.deletingUser}
                     delay={250}
-                    style={{ width: '100%' }}
+                    style={{ width: "100%" }}
                 >
                     <Card
-                        style={{ width: '100%' }}
+                        style={{ width: "100%" }}
                         actions={
                             !this.props.currentUserHost ||
                             this.props.member.isMe
@@ -65,8 +65,8 @@ class Member extends React.Component<
                                       <Tooltip
                                           title={
                                               this.props.member.isAdmin
-                                                  ? 'Remove admin status'
-                                                  : 'Promote to admin'
+                                                  ? "Remove admin status"
+                                                  : "Promote to admin"
                                           }
                                       >
                                           <Spin
@@ -82,10 +82,10 @@ class Member extends React.Component<
                                                       color: this.props.member
                                                           .isAdmin
                                                           ? theme[
-                                                                'primary-color'
+                                                                "primary-color"
                                                             ]
                                                           : theme[
-                                                                'secondary-color'
+                                                                "secondary-color"
                                                             ],
                                                   }}
                                                   key="admin"
@@ -98,7 +98,7 @@ class Member extends React.Component<
                                               />
                                           </Spin>
                                       </Tooltip>,
-                                      <Tooltip title={'Delete from group'}>
+                                      <Tooltip title={"Delete from group"}>
                                           <DeleteOutlined
                                               key="delete"
                                               onClick={() =>
@@ -121,7 +121,7 @@ class Member extends React.Component<
                                             />
                                         ) : (
                                             <UserOutlined
-                                                style={{ fontSize: '32px' }}
+                                                style={{ fontSize: "32px" }}
                                             />
                                         );
                                         if (this.props.member.isHost) {
@@ -138,8 +138,8 @@ class Member extends React.Component<
                                             style={{
                                                 textDecoration: this.props
                                                     .member.isMe
-                                                    ? 'underline'
-                                                    : 'none',
+                                                    ? "underline"
+                                                    : "none",
                                             }}
                                         >
                                             {name}

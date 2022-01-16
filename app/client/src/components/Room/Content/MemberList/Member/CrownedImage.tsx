@@ -1,5 +1,5 @@
-import { CrownOutlined } from '@ant-design/icons';
-import React from 'react';
+import { CrownOutlined } from "@ant-design/icons";
+import React from "react";
 
 export default function CrownedImage({
     children,
@@ -10,10 +10,10 @@ export default function CrownedImage({
         <div>
             <CrownOutlined
                 style={{
-                    position: 'absolute',
-                    marginLeft: '9px',
-					marginTop: '-10px',
-					color: '#ffc800'
+                    position: "absolute",
+                    marginLeft: "9px",
+                    marginTop: "-10px",
+                    color: "#ffc800",
                 }}
             />
             {children}

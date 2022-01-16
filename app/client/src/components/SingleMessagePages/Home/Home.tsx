@@ -1,6 +1,6 @@
-import { Background } from '../../shared/styles';
-import { Content, Logo, Link } from '../styles';
-import React from 'react';
+import { Background } from "../../shared/styles";
+import { Content, Logo, Link } from "../styles";
+import React from "react";
 
 const Home = () => {
     return (

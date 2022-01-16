@@ -10,7 +10,6 @@ export const NAME = "Sharify";
 // recommendations handle the rest
 export const HARD_RECOMMENDATIONS_LIMIT = !IO.get().spotifyRecommend;
 
-
 /**
  * Room options that are unlikely to change
  */
@@ -26,22 +25,17 @@ export const SPOTIFY_HOST_SCOPES = [
     "playlist-modify-public",
     "playlist-modify-private",
 ];
-export const SECRET_DIR = path.join(
-    __dirname,
-    "../../../secrets");
-export const SPOTIFY_SECRETS_FILE = path.join(
-    SECRET_DIR, "spotify.json"
-);
-export const COOKIE_SECRETS_FILE = path.join(
-    SECRET_DIR, "cookie.js"
-);
+export const SECRET_DIR = path.join(__dirname, "../../../secrets");
+export const SPOTIFY_SECRETS_FILE = path.join(SECRET_DIR, "spotify.json");
+export const COOKIE_SECRETS_FILE = path.join(SECRET_DIR, "cookie.js");
 
 /**
  * Hosting options that are unlikely to change
  */
 export const FRONTEND_PORT = 3000;
 export const HOST_URL = IO.get().host || `http://localhost:${IO.get().port}`;
-export const FRONTEND_URL = IO.get().host || `http://localhost:${FRONTEND_PORT}`;
+export const FRONTEND_URL =
+    IO.get().host || `http://localhost:${FRONTEND_PORT}`;
 export const REDIRECT_PATH = "/api/permission_callback";
 
 /**

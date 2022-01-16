@@ -1,12 +1,12 @@
-import * as express from 'express';
-import { Rooms, RoomMember, Room } from './rooms';
-import { Spotify } from './spotify';
+import * as express from "express";
+import { Rooms, RoomMember, Room } from "./rooms";
+import { Spotify } from "./spotify";
 import {
     SPOTIFY_HOST_SCOPES,
     ROOM_TIMEOUT,
     FRONTEND_URL,
     SPOTIFY_PEER_SCOPES,
-} from './constants';
+} from "./constants";
 
 export namespace Rest {
     export async function newRoom(res: express.Response) {
@@ -53,7 +53,7 @@ export namespace Rest {
         if (self) {
             res.cookie(
                 `${state.room}`,
-                Buffer.from(self.internalID + self.secretID).toString('base64'),
+                Buffer.from(self.internalID + self.secretID).toString("base64"),
                 {
                     signed: true,
                     expires: new Date(Date.now() + ROOM_TIMEOUT),
@@ -69,7 +69,7 @@ export namespace Rest {
         req: express.Request,
         res: express.Response
     ) {
-        const room = Rooms.getFromNav(req.params['id'], res);
+        const room = Rooms.getFromNav(req.params["id"], res);
         if (!room) return;
 
         const inviteLink = await Spotify.Authentication.generatePermissionURL(
@@ -83,7 +83,7 @@ export namespace Rest {
     }
 
     function getRoomFromPost(req: express.Request, res: express.Response) {
-        const roomID = req.body['room'];
+        const roomID = req.body["room"];
         const room = Rooms.getFromXHR(roomID);
         const activeMember = room ? Rooms.getActiveMember(room, req) : null;
 
@@ -91,7 +91,7 @@ export namespace Rest {
             res.status(404);
             res.send({
                 success: false,
-                error: 'No room found',
+                error: "No room found",
             });
             return null;
         }
@@ -104,7 +104,7 @@ export namespace Rest {
             res.status(401);
             res.send({
                 success: false,
-                error: 'Not allowed',
+                error: "Not allowed",
             });
             return null;
         }
@@ -117,7 +117,7 @@ export namespace Rest {
         res: express.Response,
         room: Room
     ) {
-        const targetUserID = req.body['userID'];
+        const targetUserID = req.body["userID"];
         const targetUser = targetUserID
             ? Rooms.getMemberById(room, targetUserID)
             : null;
@@ -126,7 +126,7 @@ export namespace Rest {
             res.status(404);
             res.send({
                 success: false,
-                error: 'User not found',
+                error: "User not found",
             });
             return null;
         }
@@ -154,12 +154,12 @@ export namespace Rest {
         const targetUser = getTargetFromPost(req, res, room);
         if (!targetUser) return;
 
-        const targetValue = req.body['status'];
-        if (typeof targetValue !== 'boolean') {
+        const targetValue = req.body["status"];
+        if (typeof targetValue !== "boolean") {
             res.status(400);
             res.send({
                 success: false,
-                error: 'Invalid value for status',
+                error: "Invalid value for status",
             });
             return;
         }

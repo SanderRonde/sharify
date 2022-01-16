@@ -1,36 +1,38 @@
 {
-	"name": "sharify",
-	"version": "0.1.0",
-	"main": "app/server/app.js",
-	"repository": "https://github.com/sanderronde/sharify",
-	"author": "",
-	"license": "MIT",
-	"nodemonConfig": {
-		"ext": "js",
-		"exec": "node app/server/app.js --port 1234",
-		"watch": [
-			"app/server/"
-		]
-	},
-	"scripts": {
-		"backend-watch-no-clear": "cd app/server && npm run watch",
-		"backend-install": "cd app/server && (yarn install || npm install)",
-		"backend-compile": "cd app/server && npm run compile",
-		"backend-watch": "cd app/server && npm run watch",
-		"backend-dev": "cd app/server && npm run dev",
-		"backend": "cd app/server && npm run start",
-		"frontend-install": "cd app/client && (yarn install || npm install)",
-		"frontend-build": "cd app/client && npm run build",
-		"frontend-test": "cd app/client && npm run test",
-		"frontend": "cd app/client && npm run start",
-		"install": "npm run backend-install && npm run frontend-install",
-		"dev": "concurrently \"npm:backend-dev\" \"npm:frontend\" \"npm:backend-watch-no-clear\"",
-		"prod": "npm run frontend-build && npm run backend"
-	},
-	"devDependencies": {
-		"concurrently": "^5.1.0",
-		"nodemon": "^2.0.2",
-		"typescript": "^3.8.3"
-	},
-	"dependencies": {}
+    "name": "sharify",
+    "version": "0.1.0",
+    "main": "app/server/app.js",
+    "repository": "https://github.com/sanderronde/sharify",
+    "author": "",
+    "license": "MIT",
+    "nodemonConfig": {
+        "ext": "js",
+        "exec": "node app/server/app.js --port 1234",
+        "watch": [
+            "app/server/"
+        ]
+    },
+    "scripts": {
+        "backend-watch-no-clear": "cd app/server && npm run watch",
+        "backend-install": "cd app/server && (yarn install || npm install)",
+        "backend-compile": "cd app/server && npm run compile",
+        "backend-watch": "cd app/server && npm run watch",
+        "backend-dev": "cd app/server && npm run dev",
+        "backend": "cd app/server && npm run start",
+        "frontend-install": "cd app/client && (yarn install || npm install)",
+        "frontend-build": "cd app/client && npm run build",
+        "frontend-test": "cd app/client && npm run test",
+        "frontend": "cd app/client && npm run start",
+        "install": "npm run backend-install && npm run frontend-install",
+        "dev": "concurrently \"npm:backend-dev\" \"npm:frontend\" \"npm:backend-watch-no-clear\"",
+        "prod": "npm run frontend-build && npm run backend",
+        "format": "prettier --write app"
+    },
+    "devDependencies": {
+        "concurrently": "^5.1.0",
+        "nodemon": "^2.0.2",
+        "prettier": "^2.5.1",
+        "typescript": "^3.8.3"
+    },
+    "dependencies": {}
 }

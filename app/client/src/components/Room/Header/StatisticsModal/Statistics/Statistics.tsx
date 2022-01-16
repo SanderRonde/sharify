@@ -1,10 +1,10 @@
 // import { Background } from '../../shared/styles';
 // import { Content } from '../styles';
 // import React from 'react';
-import React from 'react';
-import { StatisticsData } from '../../../../../../../shared/ws';
-import { notification } from 'antd';
-const BubbleChart = require('@weknow/react-bubble-chart-d3');
+import React from "react";
+import { StatisticsData } from "../../../../../../../shared/ws";
+import { notification } from "antd";
+const BubbleChart = require("@weknow/react-bubble-chart-d3");
 
 // import { ARTISTS_FILE } from "../../../../../server/lib/constants";
 
@@ -90,34 +90,42 @@ class Statistics extends React.Component<{
                 <>
                     {uniqueTracks.length > 0 && (
                         <>
-							{'Overlapping tracks:'}
-							<ul>
-								{uniqueTracks.map((track) => {
-									return (
-										<li>
-											{track}
-										</li>
-									);
-								})}
-								{artists.length > 0 && <br />}
-							</ul>
+                            {"Overlapping tracks:"}
+                            <ul>
+                                {uniqueTracks.map((track) => {
+                                    return <li>{track}</li>;
+                                })}
+                                {artists.length > 0 && <br />}
+                            </ul>
                         </>
                     )}
                     {uniqueArtists.length > 0 && (
                         <>
-							{'Overlapping artists:'}
-							<ul>
-								{uniqueArtists.sort((a, b) => {
-									return this.getCount(b, artists) - this.getCount(a, artists);
-								}).map((artist) => {
-									const count = this.getCount(artist, artists);
-									return (
-										<li>
-											{`${artist} ${count > 1 ? `(${count}x)` : ''}`}
-										</li>
-									);
-								})}
-							</ul>
+                            {"Overlapping artists:"}
+                            <ul>
+                                {uniqueArtists
+                                    .sort((a, b) => {
+                                        return (
+                                            this.getCount(b, artists) -
+                                            this.getCount(a, artists)
+                                        );
+                                    })
+                                    .map((artist) => {
+                                        const count = this.getCount(
+                                            artist,
+                                            artists
+                                        );
+                                        return (
+                                            <li>
+                                                {`${artist} ${
+                                                    count > 1
+                                                        ? `(${count}x)`
+                                                        : ""
+                                                }`}
+                                            </li>
+                                        );
+                                    })}
+                            </ul>
                         </>
                     )}
                 </>
@@ -129,10 +137,10 @@ class Statistics extends React.Component<{
     render() {
         const genreData = this.getGenreData();
         const font = {
-            family: 'Arial',
+            family: "Arial",
             size: 12,
-            color: '#fff',
-            weight: 'bold',
+            color: "#fff",
+            weight: "bold",
         };
 
         return (

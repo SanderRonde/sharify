@@ -1,10 +1,10 @@
-import { Verticalcenterer } from '../../../shared/styles';
+import { Verticalcenterer } from "../../../shared/styles";
 import { RoomMember } from "../../../../../../shared/ws";
-import InviteModal from './InviteModal/InviteModal';
-import { PlusOutlined } from '@ant-design/icons';
-import { Spin, Card, Tooltip, notification } from 'antd';
-import Member from './Member/Member';
-import React from 'react';
+import InviteModal from "./InviteModal/InviteModal";
+import { PlusOutlined } from "@ant-design/icons";
+import { Spin, Card, Tooltip, notification } from "antd";
+import Member from "./Member/Member";
+import React from "react";
 
 class MemberList extends React.Component<
     {
@@ -21,73 +21,75 @@ class MemberList extends React.Component<
 
     async setMemberAdmin(member: RoomMember, status: boolean) {
         try {
-            const result = await fetch('/api/user/admin', {
-                method: 'post',
+            const result = await fetch("/api/user/admin", {
+                method: "post",
                 body: JSON.stringify({
                     room: this.props.roomID,
                     userID: member.id,
-                    status: status
+                    status: status,
                 }),
                 headers: {
-                    'Content-Type': 'application/json'
+                    "Content-Type": "application/json",
                 },
-                credentials: 'include'
+                credentials: "include",
             });
             const { success, error } = (await result.json()) as {
                 success: boolean;
                 error?: string;
-            }
+            };
             if (success) {
                 notification.open({
-                    message: 'Success',
-                    description: status ? 'Promoted to admin' : 'Removed admin status'
+                    message: "Success",
+                    description: status
+                        ? "Promoted to admin"
+                        : "Removed admin status",
                 });
             } else {
                 notification.open({
-                    message: 'Error',
-                    description: error!
+                    message: "Error",
+                    description: error!,
                 });
             }
-        } catch(e) {
+        } catch (e) {
             notification.open({
-                message: 'Request failed',
-                description: 'Failed to send request'
+                message: "Request failed",
+                description: "Failed to send request",
             });
         }
     }
 
     async deleteMember(member: RoomMember) {
         try {
-            const result = await fetch('/api/user/kick', {
-                method: 'post',
+            const result = await fetch("/api/user/kick", {
+                method: "post",
                 body: JSON.stringify({
                     room: this.props.roomID,
-                    userID: member.id
+                    userID: member.id,
                 }),
                 headers: {
-                    'Content-Type': 'application/json'
+                    "Content-Type": "application/json",
                 },
-                credentials: 'include'
+                credentials: "include",
             });
             const { success, error } = (await result.json()) as {
                 success: boolean;
                 error?: string;
-            }
+            };
             if (success) {
                 notification.open({
-                    message: 'Success',
-                    description: 'Kicked user from room'
+                    message: "Success",
+                    description: "Kicked user from room",
                 });
             } else {
                 notification.open({
-                    message: 'Error',
-                    description: error!
+                    message: "Error",
+                    description: error!,
                 });
             }
-        } catch(e) {
+        } catch (e) {
             notification.open({
-                message: 'Request failed',
-                description: 'Failed to send request'
+                message: "Request failed",
+                description: "Failed to send request",
             });
         }
     }
@@ -95,8 +97,8 @@ class MemberList extends React.Component<
     render() {
         if (this.props.members.length === 0) {
             return (
-                <Verticalcenterer style={{ minHeight: '70vh'  }}>
-                    <Spin style={{ width: '100%' }} size="large" />
+                <Verticalcenterer style={{ minHeight: "70vh" }}>
+                    <Spin style={{ width: "100%" }} size="large" />
                 </Verticalcenterer>
             );
         }
@@ -141,14 +143,14 @@ class MemberList extends React.Component<
                 <Tooltip title="Invite members">
                     <Card
                         hoverable
-                        style={{ textAlign: 'center' }}
+                        style={{ textAlign: "center" }}
                         onClick={() =>
                             this.setState({
                                 modalVisible: true,
                             })
                         }
                     >
-                        <PlusOutlined style={{ fontSize: '30px' }} />
+                        <PlusOutlined style={{ fontSize: "30px" }} />
                     </Card>
                 </Tooltip>
             </>

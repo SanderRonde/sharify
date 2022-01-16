@@ -1,0 +1,3 @@
+app/client/build
+**/*.js
+**/*.d.ts

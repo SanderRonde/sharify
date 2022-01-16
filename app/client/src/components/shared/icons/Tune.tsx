@@ -1,6 +1,6 @@
-import { AntdIconProps } from '@ant-design/icons/lib/components/AntdIcon';
-import Icon from '@ant-design/icons';
-import React from 'react';
+import { AntdIconProps } from "@ant-design/icons/lib/components/AntdIcon";
+import Icon from "@ant-design/icons";
+import React from "react";
 
 const TuneSvg = () => {
     return (
@@ -19,6 +19,8 @@ const TuneSvg = () => {
     );
 };
 
-const TuneIcon = (props: AntdIconProps  & React.RefAttributes<HTMLSpanElement>) => <Icon component={TuneSvg} {...props} />
+const TuneIcon = (
+    props: AntdIconProps & React.RefAttributes<HTMLSpanElement>
+) => <Icon component={TuneSvg} {...props} />;
 
 export default TuneIcon;

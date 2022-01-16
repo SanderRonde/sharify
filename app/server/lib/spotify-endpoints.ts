@@ -1,6 +1,6 @@
-import { SpotifyTypes } from '../types/spotify';
-import { Spotify } from './spotify';
-import { Util } from './util';
+import { SpotifyTypes } from "../types/spotify";
+import { Spotify } from "./spotify";
+import { Util } from "./util";
 
 export interface RecommendationConfig {
     limit?: number;
@@ -57,35 +57,31 @@ export namespace SpotifyEndpoints {
         constructor(public api: Spotify.API.APIInstance) {}
 
         me() {
-            return this.api.get<SpotifyTypes.Endpoints.Me>('/v1/me');
+            return this.api.get<SpotifyTypes.Endpoints.Me>("/v1/me");
         }
 
         top(
-            type: 'tracks',
+            type: "tracks",
             options: {
                 limit?: number;
                 offset?: number;
-                time_range?: 'long_term' | 'medium_term' | 'short_term';
+                time_range?: "long_term" | "medium_term" | "short_term";
             }
-        ): Promise<Spotify.ExtendedResponse<
-            SpotifyTypes.Endpoints.TopTracks
-        > | null>;
+        ): Promise<Spotify.ExtendedResponse<SpotifyTypes.Endpoints.TopTracks> | null>;
         top(
-            type: 'artists',
+            type: "artists",
             options: {
                 limit?: number;
                 offset?: number;
-                time_range?: 'long_term' | 'medium_term' | 'short_term';
+                time_range?: "long_term" | "medium_term" | "short_term";
             }
-        ): Promise<Spotify.ExtendedResponse<
-            SpotifyTypes.Endpoints.TopArtists
-        > | null>;
+        ): Promise<Spotify.ExtendedResponse<SpotifyTypes.Endpoints.TopArtists> | null>;
         top(
-            type: 'artists' | 'tracks',
+            type: "artists" | "tracks",
             {
                 limit = 20,
                 offset = 0,
-                time_range = 'medium_term',
+                time_range = "medium_term",
             }: {
                 // Limit, min 1, max 50
                 limit?: number;
@@ -96,7 +92,7 @@ export namespace SpotifyEndpoints {
                 // of data and including all new data as it becomes
                 // available), medium_term (approximately last 6 months),
                 // short_term (approximately last 4 weeks).
-                time_range?: 'long_term' | 'medium_term' | 'short_term';
+                time_range?: "long_term" | "medium_term" | "short_term";
             } = {}
         ): Promise<Spotify.ExtendedResponse<
             SpotifyTypes.Endpoints.TopTracks | SpotifyTypes.Endpoints.TopArtists
@@ -106,8 +102,8 @@ export namespace SpotifyEndpoints {
                 | SpotifyTypes.Endpoints.TopTracks
             >(`/v1/me/top/${type}`, {
                 query: {
-                    limit: limit + '',
-                    offset: offset + '',
+                    limit: limit + "",
+                    offset: offset + "",
                     time_range,
                 },
             });
@@ -115,66 +111,77 @@ export namespace SpotifyEndpoints {
 
         // TODO: we can cache recommendations
 
-        recommendations(
-            options: RecommendationConfig = {}
-        ) {
+        recommendations(options: RecommendationConfig = {}) {
             const {
                 limit = 20,
                 market,
                 seed_artists = [],
                 seed_genres = [],
-				seed_tracks = [],
-				...rest
+                seed_tracks = [],
+                ...rest
             } = options;
             return this.api.get<SpotifyTypes.Endpoints.Recommendations>(
                 `/v1/recommendations`,
                 {
                     query: {
-                        limit: limit + '',
+                        limit: limit + "",
                         market,
-						seed_artists: seed_artists.join(','),
-						seed_genres: seed_genres.join(','),
-						seed_tracks: seed_tracks.join(','),
-						...rest
+                        seed_artists: seed_artists.join(","),
+                        seed_genres: seed_genres.join(","),
+                        seed_tracks: seed_tracks.join(","),
+                        ...rest,
                     },
                 }
             );
-		}
-		
-		createPlaylist(name: string, {
-			description,
-			isCollaborative, 
-			isPublic
-		}: {
-			isPublic?: boolean;
-			isCollaborative?: boolean;
-			description?: string;
-		} = {}) {
-			return this.api.post<SpotifyTypes.Endpoints.CreatePlaylist>(`/v1/users/${this.api.id}/playlists`, JSON.stringify({
-				name: name,
-				public: isPublic,
-				collaborative: isCollaborative,
-				description
-			}));
         }
 
-        updatePlaylistMeta(playlistId: string, name: string, {
-			description,
-			isCollaborative, 
-			isPublic
-		}: {
-			isPublic?: boolean;
-			isCollaborative?: boolean;
-			description?: string;
-		} = {}) {
-			return this.api.put<SpotifyTypes.Endpoints.CreatePlaylist>(`/v1/users/${this.api.id}/playlists/${playlistId}`, JSON.stringify({
-				name: name,
-				public: isPublic,
-				collaborative: isCollaborative,
-				description
-			}));
+        createPlaylist(
+            name: string,
+            {
+                description,
+                isCollaborative,
+                isPublic,
+            }: {
+                isPublic?: boolean;
+                isCollaborative?: boolean;
+                description?: string;
+            } = {}
+        ) {
+            return this.api.post<SpotifyTypes.Endpoints.CreatePlaylist>(
+                `/v1/users/${this.api.id}/playlists`,
+                JSON.stringify({
+                    name: name,
+                    public: isPublic,
+                    collaborative: isCollaborative,
+                    description,
+                })
+            );
         }
-        
+
+        updatePlaylistMeta(
+            playlistId: string,
+            name: string,
+            {
+                description,
+                isCollaborative,
+                isPublic,
+            }: {
+                isPublic?: boolean;
+                isCollaborative?: boolean;
+                description?: string;
+            } = {}
+        ) {
+            return this.api.put<SpotifyTypes.Endpoints.CreatePlaylist>(
+                `/v1/users/${this.api.id}/playlists/${playlistId}`,
+                JSON.stringify({
+                    name: name,
+                    public: isPublic,
+                    collaborative: isCollaborative,
+                    description,
+                })
+            );
+        }
+
         private _splitIntoGroups<V>(value: V[], maxLength: number): V[][] {
             const groups: V[][] = [];
             while (value.length > maxLength) {
@@ -184,47 +191,61 @@ export namespace SpotifyEndpoints {
             return groups;
         }
 
-		async addToPlaylist(playlistID: string, {
-			position, uris = []
-		}: {
-			uris?: string[];
-			position?: number;
-		} = {}): Promise<null|Spotify.PartialResponse<{
+        async addToPlaylist(
+            playlistID: string,
+            {
+                position,
+                uris = [],
+            }: {
+                uris?: string[];
+                position?: number;
+            } = {}
+        ): Promise<null | Spotify.PartialResponse<{
             snapshot_id: string;
         }>> {
             const groups = this._splitIntoGroups(uris, 100);
-            const results = await Promise.all(groups.map((group) => {
-                return this.api.post<{
-                    snapshot_id: string;
-                }>(`/v1/playlists/${playlistID}/tracks`, JSON.stringify({
-                    uris: group,
-                    position
-                }));    
-            }));
+            const results = await Promise.all(
+                groups.map((group) => {
+                    return this.api.post<{
+                        snapshot_id: string;
+                    }>(
+                        `/v1/playlists/${playlistID}/tracks`,
+                        JSON.stringify({
+                            uris: group,
+                            position,
+                        })
+                    );
+                })
+            );
             for (const result of results) {
                 if (!result) return null;
             }
 
-            const lastID = (await results[results.length - 1]!.json()).snapshot_id;
-			return {
+            const lastID = (await results[results.length - 1]!.json())
+                .snapshot_id;
+            return {
                 json() {
                     return Promise.resolve({
-                        snapshot_id: lastID
+                        snapshot_id: lastID,
                     });
-                }
-            }
+                },
+            };
         }
-        
+
         // TODO: we can cache artists
 
-        async artists(artistIDs: string[]): Promise<null|Spotify.PartialResponse<SpotifyTypes.Endpoints.Artists>> {
-            const results = (await Promise.all(this._splitIntoGroups(artistIDs, 50).map((group) => {
-                return this.api.get<{}>('/v1/artists', {
-                    query: {
-                        ids: group.join(',')
-                    }
-                });
-            }))) as (Spotify.ExtendedResponse<SpotifyTypes.Endpoints.Artists>|null)[];
+        async artists(
+            artistIDs: string[]
+        ): Promise<null | Spotify.PartialResponse<SpotifyTypes.Endpoints.Artists>> {
+            const results = (await Promise.all(
+                this._splitIntoGroups(artistIDs, 50).map((group) => {
+                    return this.api.get<{}>("/v1/artists", {
+                        query: {
+                            ids: group.join(","),
+                        },
+                    });
+                })
+            )) as (Spotify.ExtendedResponse<SpotifyTypes.Endpoints.Artists> | null)[];
             for (const result of results) {
                 if (!result) return null;
             }
@@ -232,20 +253,27 @@ export namespace SpotifyEndpoints {
             return {
                 async json() {
                     return {
-                        artists: Util.flat(await Promise.all(results.map(async (result) => {
-                            return (await result!.json()).artists;
-                        })))
-                    }
-                }
-            }
+                        artists: Util.flat(
+                            await Promise.all(
+                                results.map(async (result) => {
+                                    return (await result!.json()).artists;
+                                })
+                            )
+                        ),
+                    };
+                },
+            };
         }
 
-        playlistTracks(playlistID: string, config: {
-            fields?: string;
-            limit?: number;
-            offset?: number;
-            market?: string;
-        } = {}) {
+        playlistTracks(
+            playlistID: string,
+            config: {
+                fields?: string;
+                limit?: number;
+                offset?: number;
+                market?: string;
+            } = {}
+        ) {
             return this.api.get<SpotifyTypes.Endpoints.PlaylistTracks>(
                 `/v1/playlists/${playlistID}/tracks`,
                 {
@@ -256,29 +284,35 @@ export namespace SpotifyEndpoints {
 
         async deleteTracks(playlistID: string, trackIDs: string[]) {
             const groups = this._splitIntoGroups(trackIDs, 100);
-            const results = await Promise.all(groups.map((group) => {
-                return this.api.delete<{
-                    snapshot_id: string;
-                }>(`/v1/playlists/${playlistID}/tracks`, JSON.stringify({
-                    tracks: group.map((id) => {
-                        return {
-                            uri: id
-                        }
-                    })
-                }));    
-            }));
+            const results = await Promise.all(
+                groups.map((group) => {
+                    return this.api.delete<{
+                        snapshot_id: string;
+                    }>(
+                        `/v1/playlists/${playlistID}/tracks`,
+                        JSON.stringify({
+                            tracks: group.map((id) => {
+                                return {
+                                    uri: id,
+                                };
+                            }),
+                        })
+                    );
+                })
+            );
             for (const result of results) {
                 if (!result) return null;
             }
 
-            const lastID = (await results[results.length - 1]!.json()).snapshot_id;
-			return {
+            const lastID = (await results[results.length - 1]!.json())
+                .snapshot_id;
+            return {
                 json() {
                     return Promise.resolve({
-                        snapshot_id: lastID
+                        snapshot_id: lastID,
                     });
-                }
-            }
+                },
+            };
         }
     }
 }

@@ -27,12 +27,12 @@ module.exports = override(
                 new GenerateSW({
                     clientsClaim: true,
                     exclude: [/\.map$/, /asset-manifest\.json$/],
-					importWorkboxFrom: "cdn",
-					navigateFallback: "/index.html",
+                    importWorkboxFrom: "cdn",
+                    navigateFallback: "/index.html",
                     navigateFallbackBlacklist: [
                         // Exclude URLs starting with /_, as they're likely an API call
-						new RegExp("^/_"),
-						new RegExp("^/api"),
+                        new RegExp("^/_"),
+                        new RegExp("^/api"),
                         new RegExp("/[^/?]+\\.[^/]+$"),
                     ],
                 }),

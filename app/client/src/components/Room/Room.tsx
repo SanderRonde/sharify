@@ -1,10 +1,14 @@
-import { WebsocketMessage, RoomMember, StatisticsData } from '../../../../shared/ws';
-import { Background } from '../shared/styles';
-import Content from './Content/Content';
-import Header from './Header/Header';
-import { notification } from 'antd';
-import { Page } from './styles';
-import React from 'react';
+import {
+    WebsocketMessage,
+    RoomMember,
+    StatisticsData,
+} from "../../../../shared/ws";
+import { Background } from "../shared/styles";
+import Content from "./Content/Content";
+import Header from "./Header/Header";
+import { notification } from "antd";
+import { Page } from "./styles";
+import React from "react";
 
 interface Props {
     id: string;
@@ -24,42 +28,43 @@ class Room extends React.Component<
         statistics: {
             artistOverlap: [],
             genreOverlap: [],
-            trackOverlap: []
-        }
+            trackOverlap: [],
+        },
     };
 
     handleMessage(message: WebsocketMessage) {
         switch (message.type) {
-            case 'connect':
+            case "connect":
                 if (message.success === false) {
                     // Failed to connect, redirect to 404
                     notification.open({
-                        message: 'Room not found',
+                        message: "Room not found",
                         description:
                             "Room does not exist or you're not a member",
                     });
-                    window.location.href = '/404';
+                    window.location.href = "/404";
                     break;
                 }
                 break;
-            case 'update':
+            case "update":
                 if (message.success) {
                     this.setState({
                         members: message.members || this.state.members,
                         playlistID: message.playlistID || this.state.playlistID,
-                        statistics: message.statistics || this.state.statistics
+                        statistics: message.statistics || this.state.statistics,
                     });
                 } else {
                     notification.open({
-                        message: 'Something went wrong',
-                        description: 'Something went wrong fetching updates',
+                        message: "Something went wrong",
+                        description: "Something went wrong fetching updates",
                     });
                 }
                 break;
-            case 'notifyPlaylistCreated':
+            case "notifyPlaylistCreated":
                 notification.open({
-                    message: 'Playlist created',
-                    description: 'A new collaborative playlist has been created',
+                    message: "Playlist created",
+                    description:
+                        "A new collaborative playlist has been created",
                 });
         }
     }
@@ -70,30 +75,31 @@ class Room extends React.Component<
     }
 
     connect() {
-        const isSecure = window.location.protocol === 'https:';
-        const protocol = isSecure ? 'wss' : 'ws';
+        const isSecure = window.location.protocol === "https:";
+        const protocol = isSecure ? "wss" : "ws";
         const ws = new WebSocket(
             `${protocol}://${window.location.host}/ws/room/${this.props.id}`
         );
         ws.onmessage = (m) => {
-            if (m.data === 'pong') return;
-            if (m.data === 'ping') {
-                ws.send('pong');
+            if (m.data === "pong") return;
+            if (m.data === "ping") {
+                ws.send("pong");
                 return;
             }
             this.onMessage(m);
-        }
+        };
         const interval = window.setInterval(() => {
-            ws.send('ping');
+            ws.send("ping");
         }, 1000 * 60);
         ws.onclose = () => {
             window.clearInterval(interval);
             notification.open({
-                message: 'Disconnected',
-                description: 'Disconnected from server, reconnecting in 15 seconds'
+                message: "Disconnected",
+                description:
+                    "Disconnected from server, reconnecting in 15 seconds",
             });
             setTimeout(() => this.connect, 15 * 1000);
-        }
+        };
     }
 
     componentDidMount() {
